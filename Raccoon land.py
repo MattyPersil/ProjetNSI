@@ -47,7 +47,7 @@ class Player:
                 self.player_facing='left'
 
             self.player_position.x -= 300 * dt
-            
+            #commentaire
 
 class World:
     def __init__(self,monde=0):
