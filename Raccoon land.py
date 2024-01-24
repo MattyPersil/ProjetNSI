@@ -1,12 +1,14 @@
 #importation de pygame et mise en place des variables nécéssaires
 import pygame
 import time 
+from liste_des_levels import *
 pygame.init
 screen = pygame.display.set_mode((1000,600))
 clock = pygame.time.Clock()
 running = True
 dt = 0
 pygame.display.set_caption('Raccoon Land')
+
 #pygame.display.set_icon(pygame.image.load("assets/Icon.png"))
 
 #création de la classe player utilisée pour enregistrer le joueur 
@@ -47,7 +49,7 @@ class Player:
                 self.player_facing='left'
 
             self.player_position.x -= 300 * dt
-            #commentaire
+
 
 class World:
     def __init__(self,monde=0):
@@ -63,6 +65,16 @@ class World:
         else:
             self.background=self.sky0
             self.world=0
+"""
+class camera(pygame.sprite.Sprite):
+    def __init__(self):
+        self.position = [0,0]
+
+    def follow(self,player):
+        self.position=[player.rect.x-screen.get_width() / 2,player.rect.y-screen.get_height() / 2] 
+        print(self.position)
+    """
+
 
 
 class Ground(pygame.sprite.Sprite):
@@ -78,19 +90,17 @@ class Ground(pygame.sprite.Sprite):
         joueur.player_position.y += self.gravite[1]+self.resistance[1]
         
     
-class  Platform(pygame.sprite.Sprite):
+class  blocks(pygame.sprite.Sprite):
     def __init_(self):
         super().__init__()
-        #self.image = pygame.image.lead("")
-        self.rect.x = self.image.get_rect()
-        self.rect.x = 580
-        self.rect.y = 500
+        
+
 
 #création du joueur
 player_1 = Player()
 world = World()
 ground = Ground()
-platform=Platform()
+#cam = camera()
 
 #lancement du jeu
 while running == True:
@@ -101,9 +111,13 @@ while running == True:
 
     screen.blit(world.background,(0,0))
     #pygame.draw.circle(screen, "blue", player_1.player_position, 40)
+    """
+    ground.rect.y = cam.position[1]
+    ground.rect.x = cam.position[0]"""
     screen.blit(ground.image, ground.rect)
     screen.blit(player_1.image, player_1.player_position)
     ground.gravite_jeu(player_1)
+    #cam.follow(player_1)
     player_1.getrect()
     if ground.rect.colliderect(player_1.rect):
         ground.resistance = (0,-10)
@@ -123,8 +137,6 @@ while running == True:
         
     player_1.player_position.y -= player_1.velocity[0] * dt
     player_1.velocity = (player_1.velocity[0],player_1.velocity[1]-1)
-    if player_1.velocity[1]!=0:
-        player_1.image=player_1.image_top
     if player_1.velocity[1]==0:
         player_1.velocity=(0,0)
 
@@ -134,6 +146,4 @@ while running == True:
 
     pygame.display.flip()
     dt = clock.tick(60) / 1000
-
-
 
