@@ -20,8 +20,8 @@ class Player:
         self.player_position = position
         self.world = world
         self.hp = hp
-        self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.2)
-        self.image_right = pygame.transform.scale_by(pygame.image.load("assets/Player_right.png"),0.2)
+        self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
+        self.image_right = pygame.transform.scale_by(pygame.image.load("assets/Player_right.png"),0.1)
         self.image=self.image_right
         self.image_top = pygame.transform.rotate(self.image_right,90)
         self.rect = self.image.get_rect(topleft=self.player_position)
@@ -90,16 +90,43 @@ class Ground(pygame.sprite.Sprite):
         joueur.player_position.y += self.gravite[1]+self.resistance[1]
         
     
-class  blocks(pygame.sprite.Sprite):
-    def __init_(self):
+class  blcks(pygame.sprite.Sprite):
+    def __init__(self):
         super().__init__()
-        
+        self.image_size = ((screen.get_height()/16)+1,(screen.get_height()/16)+1)
+        self.dirt = pygame.transform.scale(pygame.image.load("assets/dirt.png"),self.image_size)
+        self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size) 
+        self.rects = [] 
+        self.gravite = 10
+        self.resistance = 0  
+    
+    def display(self):
+        self.rects=[]
+        if world.world == 0:
+            w = level_1_world_1
+        else:
+            w = level_1_world_2
+        y=1
+        for i in w:
+            x=1
+            for n in i:
+                if n == 1:
+                    screen.blit(self.dirt ,(x,y))
+                    self.rects.append(self.dirt.get_rect(topleft=(x,y)))
+                if n == 3:
+                    screen.blit(self.grassblock,(x,y))
+                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                x+=self.image_size[0]-1
+            y+=self.image_size[1]-1
 
+    def gravite_jeu(self,joueur):
+        joueur.player_position.y += self.gravite+self.resistance
 
 #création du joueur
 player_1 = Player()
 world = World()
 ground = Ground()
+blocks = blcks()
 #cam = camera()
 
 #lancement du jeu
@@ -110,20 +137,31 @@ while running == True:
             running=False
 
     screen.blit(world.background,(0,0))
-    #pygame.draw.circle(screen, "blue", player_1.player_position, 40)
-    """
-    ground.rect.y = cam.position[1]
-    ground.rect.x = cam.position[0]"""
-    screen.blit(ground.image, ground.rect)
+    #screen.blit(ground.image, ground.rect)
     screen.blit(player_1.image, player_1.player_position)
-    ground.gravite_jeu(player_1)
-    #cam.follow(player_1)
+    blocks.display()
+    #ground.gravite_jeu(player_1)
+
+    blocks.gravite_jeu(player_1)
+
+    player_1.getrect()
+    collision = False
+    for block in blocks.rects:
+        if block.colliderect(player_1.rect):
+            collision=True
+    print(collision)
+    if collision==True:
+        blocks.resistance = -10
+    else:
+        blocks.resistance = 0
+
+    """
     player_1.getrect()
     if ground.rect.colliderect(player_1.rect):
         ground.resistance = (0,-10)
     else:
         ground.resistance =(0,0)
-    #screen.blit(platform.image, platform.rect)
+    """
 
     #récupération des touches presséees 
     keys = pygame.key.get_pressed()
@@ -132,8 +170,11 @@ while running == True:
     if keys[pygame.K_q]:
         player_1.move('left')
     if keys[pygame.K_SPACE]:
-        if ground.rect.colliderect(player_1.rect):
+        if collision==True:
             player_1.velocity=(700,20)
+        
+    if player_1.player_position.y>=1000:
+        running=False
         
     player_1.player_position.y -= player_1.velocity[0] * dt
     player_1.velocity = (player_1.velocity[0],player_1.velocity[1]-1)
