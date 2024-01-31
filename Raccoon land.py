@@ -96,6 +96,10 @@ class  blcks(pygame.sprite.Sprite):
         self.image_size = ((screen.get_height()/16)+1,(screen.get_height()/16)+1)
         self.dirt = pygame.transform.scale(pygame.image.load("assets/dirt.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size) 
+        self.stone = pygame.transform.scale(pygame.image.load("assets/Stone.png"),self.image_size)
+        self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
+        self.flowers = pygame.transform.scale(pygame.image.load("assets/flowers.png"),self.image_size)
+        self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
         self.rects = [] 
         self.gravite = 10
         self.resistance = 0  
@@ -103,7 +107,7 @@ class  blcks(pygame.sprite.Sprite):
     def display(self):
         self.rects=[]
         if world.world == 0:
-            w = level_test_1
+            w = level_2_world_1
         else:
             w = test
         y=1
@@ -116,6 +120,18 @@ class  blcks(pygame.sprite.Sprite):
                 if n == 2:
                     screen.blit(self.grassblock,(x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                if n == 3:
+                    screen.blit(self.stone,(x,y))
+                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                if n == 4:
+                    screen.blit(self.flowers,(x,y))
+                if n == 5:
+                    screen.blit(self.cloud,(x,y))
+                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                if n == 6:
+                    screen.blit(self.trashcan,(x,y))
+                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                    
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
@@ -171,7 +187,7 @@ while running == True:
         player_1.move('left')
     if keys[pygame.K_SPACE]:
         if collision==True:
-            player_1.velocity=(700,20)
+            player_1.velocity=(600,20)
         
     if player_1.player_position.y>=1000:
         running=False
