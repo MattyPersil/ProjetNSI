@@ -16,7 +16,7 @@ pygame.display.set_caption('Raccoon Land')
 class Player:
 
 
-    def __init__(self,position = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2),world=0, hp = 3):
+    def __init__(self,position = pygame.Vector2(44, 400),world=0, hp = 3):
         self.player_position = position
         self.world = world
         self.hp = hp
@@ -54,7 +54,7 @@ class Player:
 class World:
     def __init__(self,monde=0):
         self.world=monde
-        self.sky0 = pygame.image.load("assets/sky0.png")
+        self.sky0 = pygame.transform.scale(pygame.image.load("assets/sky0.png"),(1000,600))
         self.sky1 = pygame.image.load("assets/sky1.png")
         self.background=self.sky0
 
@@ -65,6 +65,10 @@ class World:
         else:
             self.background=self.sky0
             self.world=0
+    
+    def change_level(self):
+        blocks.wld+=1
+        player_1.player_position = pygame.Vector2(44, 400)
 """
 class camera(pygame.sprite.Sprite):
     def __init__(self):
@@ -74,42 +78,32 @@ class camera(pygame.sprite.Sprite):
         self.position=[player.rect.x-screen.get_width() / 2,player.rect.y-screen.get_height() / 2] 
         print(self.position)
     """
-
-
-
-class Ground(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("assets/ground.jpg")
-        self.rect = self.image.get_rect()
-        self.rect.y = 540
-        self.gravite = (0,10)
-        self.resistance = (0,0)
-
-    def gravite_jeu(self,joueur):
-        joueur.player_position.y += self.gravite[1]+self.resistance[1]
         
-    
 class  blcks(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image_size = ((screen.get_height()/16)+1,(screen.get_height()/16)+1)
+        self.image_size = ((screen.get_width()/27)+1,(screen.get_height()/16)+1)
         self.dirt = pygame.transform.scale(pygame.image.load("assets/dirt.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size) 
         self.stone = pygame.transform.scale(pygame.image.load("assets/Stone.png"),self.image_size)
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.flowers = pygame.transform.scale(pygame.image.load("assets/flowers.png"),self.image_size)
         self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
+        self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
         self.rects = [] 
+        self.specialrect = None
         self.gravite = 10
         self.resistance = 0  
+        self.levels = [(level_test_1,level_test_2),(level_2_world_1,level_1_world_2)]
+        self.wld = 0
     
     def display(self):
         self.rects=[]
+        self.specialrect = None
         if world.world == 0:
-            w = level_2_world_1
+            w = self.levels[self.wld][0]
         else:
-            w = level_1_world_2
+            w = self.levels[self.wld][1]
         y=1
         for i in w:
             x=1
@@ -131,6 +125,9 @@ class  blcks(pygame.sprite.Sprite):
                 if n == 6:
                     screen.blit(self.trashcan,(x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                if n == 9:
+                    screen.blit(self.change_level_block,(x,y))
+                    self.specialrect = self.change_level_block.get_rect(topleft=(x,y))
                     
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
@@ -141,7 +138,6 @@ class  blcks(pygame.sprite.Sprite):
 #création du joueur
 player_1 = Player()
 world = World()
-ground = Ground()
 blocks = blcks()
 #cam = camera()
 
@@ -165,6 +161,11 @@ while running == True:
     for block in blocks.rects:
         if block.colliderect(player_1.rect):
             collision=True
+    if world.world == 0:
+        if blocks.specialrect.colliderect(player_1.rect):
+            world.change_level()
+            print('Special rect collision')
+    print((blocks.specialrect,player_1.rect))
     print(collision)
     if collision==True:
         blocks.resistance = -10
@@ -187,7 +188,7 @@ while running == True:
         player_1.move('left')
     if keys[pygame.K_SPACE]:
         if collision==True:
-            player_1.velocity=(600,20)
+            player_1.velocity=(450,20)
         
     if player_1.player_position.y>=1000:
         running=False
