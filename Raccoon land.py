@@ -94,7 +94,7 @@ class  blcks(pygame.sprite.Sprite):
         self.specialrect = None
         self.gravite = 10
         self.resistance = 0  
-        self.levels = [(level_test_1,level_test_2),(level_2_world_1,level_1_world_2)]
+        self.levels = [(level_test_1,level_test_2),(level_2_world_1,level_2_world_2)]
         self.wld = 0
     
     def display(self):
