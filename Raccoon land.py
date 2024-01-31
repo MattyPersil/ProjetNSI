@@ -105,7 +105,7 @@ class  blcks(pygame.sprite.Sprite):
         if world.world == 0:
             w = level_1_world_1
         else:
-            w = level_1_world_2
+            w = test
         y=1
         for i in w:
             x=1
@@ -113,7 +113,7 @@ class  blcks(pygame.sprite.Sprite):
                 if n == 1:
                     screen.blit(self.dirt ,(x,y))
                     self.rects.append(self.dirt.get_rect(topleft=(x,y)))
-                if n == 3:
+                if n == 2:
                     screen.blit(self.grassblock,(x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 x+=self.image_size[0]-1
