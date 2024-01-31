@@ -103,7 +103,7 @@ class  blcks(pygame.sprite.Sprite):
     def display(self):
         self.rects=[]
         if world.world == 0:
-            w = level_1_world_1
+            w = level_test_1
         else:
             w = test
         y=1
