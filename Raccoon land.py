@@ -96,7 +96,9 @@ class  blcks(pygame.sprite.Sprite):
         self.specialrect = None
         self.gravite = 10
         self.resistance = 0  
-        self.levels = [(level_test_1,level_test_2),(level_2_world_1,level_2_world_2),(level_3_world_1,level_3_world_2)]
+        self.levels = [(level_test_1,level_test_2),
+                       (level_2_world_1,level_2_world_2),
+                       (level_3_world_1,level_3_world_2)]
         self.wld = 0
     
     def display(self):
@@ -162,10 +164,12 @@ while running == True:
     collision = False
     left_collision = False
     right_collision = False
+    top_collision = False
     for block in blocks.rects:
         if block.colliderect(player_1.rect):
             collision=True
         
+        #Faire les top collision
         block1 = block
         block2 = block
         block2.y+=5
