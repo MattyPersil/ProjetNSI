@@ -23,23 +23,27 @@ def clic(x,y):
         liste_finale[x][y]=5
         liste_boutons[x][y]['bg']='cyan'
     elif liste_boutons[x][y]['bg']=='cyan':
-        liste_finale[x][y]=6    
+        liste_finale[x][y]=6
         liste_boutons[x][y]['bg']='blue'
     elif liste_boutons[x][y]['bg']=='blue':
+        liste_finale[x][y]=9
+        liste_boutons[x][y]['bg']='#8712E8'
+    elif liste_boutons[x][y]['bg']=='#8712E8':
         liste_finale[x][y]=0
         liste_boutons[x][y]['bg']='white'
+
 
 def quit():
     global fen
     fen.quit()
     liste_f = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
-    
+
     for i in liste_finale:
         for n in range(len(i)):
             liste_f[n].append(i[n])
 
     print(liste_f)
-    
+
 liste_finale = []
 for i in range(27):
     l1 =[]
