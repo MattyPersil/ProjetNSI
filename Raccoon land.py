@@ -28,6 +28,8 @@ class Player:
         self.player_facing = 'right'
         self.height = self.image.get_height()
         self.velocity = (0,0)
+        self.move_left = True
+        self.move_right = True
 
 
     #création de la fonction move permettant de bouger le joueur
@@ -40,15 +42,15 @@ class Player:
             if self.player_facing=='left':
                 self.image=self.image_right
                 self.player_facing='right'
-
-            self.player_position.x += 300 * dt
+            if self.move_right==True:
+                self.player_position.x += 300 * dt
 
         elif direction =='left':
             if self.player_facing=='right':
                 self.image=self.image_left
                 self.player_facing='left'
-
-            self.player_position.x -= 300 * dt
+            if self.move_left == True:
+                self.player_position.x -= 300 * dt
 
 
 class World:
@@ -158,19 +160,46 @@ while running == True:
 
     player_1.getrect()
     collision = False
+    left_collision = False
+    right_collision = False
     for block in blocks.rects:
         if block.colliderect(player_1.rect):
             collision=True
+        
+        block1 = block
+        block2 = block
+        block2.y+=5
+        block1.y+=5
+        block1.x-=5
+        block2.x+=5
+        if block1.colliderect(player_1.rect):
+            left_collision = True
+        if block2.colliderect(player_1.rect):
+            right_collision=True
+    
+    if left_collision == True:
+        player_1.move_left = False
+        player_1.move_right = True
+    if right_collision == True:
+        player_1.move_right = False
+        player_1.move_left = True
+    if right_collision == True and left_collision == True:
+        player_1.move_left = False
+        player_1.move_right= False
+    if right_collision == False and left_collision == False:
+        player_1.move_left = True
+        player_1.move_right = True
+
     if world.world == 0:
         if blocks.specialrect.colliderect(player_1.rect):
             world.change_level()
             print('Special rect collision')
-    print((blocks.specialrect,player_1.rect))
-    print(collision)
     if collision==True:
         blocks.resistance = -10
     else:
         blocks.resistance = 0
+
+
 
     """
     player_1.getrect()
@@ -188,7 +217,7 @@ while running == True:
         player_1.move('left')
     if keys[pygame.K_SPACE]:
         if collision==True:
-            player_1.velocity=(300,10)
+            player_1.velocity=(700,20)
         
     if player_1.player_position.y>=1000:
         running=False
