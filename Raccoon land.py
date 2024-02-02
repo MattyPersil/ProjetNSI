@@ -188,7 +188,7 @@ while running == True:
         player_1.move('left')
     if keys[pygame.K_SPACE]:
         if collision==True:
-            player_1.velocity=(400,10)
+            player_1.velocity=(300,10)
         
     if player_1.player_position.y>=1000:
         running=False
