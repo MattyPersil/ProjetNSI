@@ -29,8 +29,12 @@ def clic(x,y):
         liste_finale[x][y]=9
         liste_boutons[x][y]['bg']='#8712E8'
     elif liste_boutons[x][y]['bg']=='#8712E8':
+        liste_finale[x][y]=10
+        liste_boutons[x][y]['bg']='#74E567'
+    elif liste_boutons[x][y]['bg']=='#74E567':
         liste_finale[x][y]=0
         liste_boutons[x][y]['bg']='white'
+
 
 
 def quit():
