@@ -1,4 +1,4 @@
-#importation de pygame et mise en place des variables nécéssaires
+ #importation de pygame et mise en place des variables nécéssaires
 import pygame
 import time 
 from liste_des_levels import *
