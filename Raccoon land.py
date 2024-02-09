@@ -1,4 +1,4 @@
- #importation de pygame et mise en place des variables nécéssaires
+     #importation de pygame et mise en place des variables nécéssaires
 import pygame
 import time 
 from liste_des_levels import *
@@ -231,7 +231,7 @@ while running == True:
     if player_1.velocity[1]==0:
         player_1.velocity=(0,0)
 
-    if keys[pygame.K_j]:
+    if keys[pygame.K_e]:
         world.switch()
         time.sleep(0.1)
 
