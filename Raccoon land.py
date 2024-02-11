@@ -1,6 +1,6 @@
-     #importation de pygame et mise en place des variables nécéssaires
+#importation de pygame et mise en place des variables nécéssaires
 import pygame
-import time 
+import time
 from liste_des_levels import *
 pygame.init
 screen = pygame.display.set_mode((1000,600))
@@ -11,7 +11,7 @@ pygame.display.set_caption('Raccoon Land')
 
 #pygame.display.set_icon(pygame.image.load("assets/Icon.png"))
 
-#création de la classe player utilisée pour enregistrer le joueur 
+#création de la classe player utilisée pour enregistrer le joueur
 #on définit le monde, où il est, sa barre de vie et son image
 class Player:
 
@@ -67,7 +67,7 @@ class World:
         else:
             self.background=self.sky0
             self.world=0
-    
+
     def change_level(self):
         blocks.wld+=1
         player_1.player_position = pygame.Vector2(44, 400)
@@ -77,32 +77,32 @@ class camera(pygame.sprite.Sprite):
         self.position = [0,0]
 
     def follow(self,player):
-        self.position=[player.rect.x-screen.get_width() / 2,player.rect.y-screen.get_height() / 2] 
+        self.position=[player.rect.x-screen.get_width() / 2,player.rect.y-screen.get_height() / 2]
         print(self.position)
     """
-        
+
 class  blcks(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image_size = ((screen.get_width()/27)+1,(screen.get_height()/16)+1)
         self.dirt = pygame.transform.scale(pygame.image.load("assets/dirt.png"),self.image_size)
-        self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size) 
+        self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.stone = pygame.transform.scale(pygame.image.load("assets/Stone.png"),self.image_size)
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.flowers = pygame.transform.scale(pygame.image.load("assets/flowers.png"),self.image_size)
         self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
-        self.rects = [] 
+        self.rects = []
         self.specialrect = None
         self.gravite = 10
-        self.resistance = 0  
+        self.resistance = 0
         self.levels = [(level_test_1,level_test_2),
                        (level_2_world_1,level_2_world_2),
                        (level_3_world_1,level_3_world_2),
                        (level_4_world_1,level_4_world_2),
                        (level_5_world_1,level_5_world_2)]
         self.wld = 0
-    
+
     def display(self):
         self.rects=[]
         self.specialrect = None
@@ -134,7 +134,7 @@ class  blcks(pygame.sprite.Sprite):
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
                     self.specialrect = self.change_level_block.get_rect(topleft=(x,y))
-                    
+
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
@@ -149,7 +149,7 @@ blocks = blcks()
 
 #lancement du jeu
 while running == True:
-    # code permettant de fermer le jeu quand la fenetre est fermée 
+    # code permettant de fermer le jeu quand la fenetre est fermée
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running=False
@@ -170,7 +170,7 @@ while running == True:
     for block in blocks.rects:
         if block.colliderect(player_1.rect):
             collision=True
-        
+
         #Faire les top collision
         block1 = block
         block2 = block
@@ -182,7 +182,7 @@ while running == True:
             left_collision = True
         if block2.colliderect(player_1.rect):
             right_collision=True
-    
+
     if left_collision == True:
         player_1.move_left = False
         player_1.move_right = True
@@ -215,7 +215,7 @@ while running == True:
         ground.resistance =(0,0)
     """
 
-    #récupération des touches presséees 
+    #récupération des touches presséees
     keys = pygame.key.get_pressed()
     if keys[pygame.K_d]:
         player_1.move('right')
@@ -224,10 +224,10 @@ while running == True:
     if keys[pygame.K_SPACE]:
         if collision==True:
             player_1.velocity=(700,20)
-        
+
     if player_1.player_position.y>=1000:
         running=False
-        
+
     player_1.player_position.y -= player_1.velocity[0] * dt
     player_1.velocity = (player_1.velocity[0],player_1.velocity[1]-1)
     if player_1.velocity[1]==0:
