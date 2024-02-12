@@ -217,9 +217,9 @@ while running == True:
 
     #récupération des touches presséees
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         player_1.move('right')
-    if keys[pygame.K_q]:
+    if keys[pygame.K_q] or keys[pygame.K_LEFT]:
         player_1.move('left')
     if keys[pygame.K_SPACE]:
         if collision==True:
@@ -233,9 +233,9 @@ while running == True:
     if player_1.velocity[1]==0:
         player_1.velocity=(0,0)
 
-    if keys[pygame.K_j]:
+    if keys[pygame.K_j] or keys[pygame.K_e]:
         world.switch()
-        time.sleep(0.1)
+        time.sleep(0.15)
 
     pygame.display.flip()
     dt = clock.tick(60) / 1000
