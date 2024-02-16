@@ -108,7 +108,9 @@ class  blcks(pygame.sprite.Sprite):
                        (level_3_world_1,level_3_world_2),
                        (level_4_world_1,level_4_world_2),
                        (level_5_world_1,level_5_world_2),
-                       (level_6_world_1,level_6_world_2)]
+                       (level_6_world_1,level_6_world_2),
+                       (level_7_world_1,level_7_world_2),
+                       (level_8_world_1,level_8_world_2)]
         self.wld = 0
 
     def display(self):
