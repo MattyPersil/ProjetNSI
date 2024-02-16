@@ -95,7 +95,7 @@ class  blcks(pygame.sprite.Sprite):
         #self.spike = pygame.transform.scale(pygame.image.load("assets/pique.png"),self.image_size)
         self.rects = [] 
         self.specialrect = None
-        self.gravite = 10
+        self.gravite = 10   
         self.resistance = 0
         self.levels = [(level_test_1,level_test_2),
                        (level_2_world_1,level_2_world_2),

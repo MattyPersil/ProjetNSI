@@ -20,7 +20,8 @@ class Player:
         self.player_position = pygame.Vector2(44, 400)
         self.hp = 3
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
-        self.image_right = pygame.transform.flip(self.image_left)
+        self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
+        self.current_image = self.image_right
         self.rect = self.image_right.get_rect(topleft=self.player_position)
         self.player_facing = 'right'
         self.velocity = (0,0)
@@ -36,16 +37,21 @@ class Player:
     def move(self,direction):
         if direction == 'right':
             if self.player_facing=='left':
-                self.image=self.image_right
+                self.current_image=self.image_right
                 self.player_facing='right'
             if self.move_right==True:
                 self.player_position.x += 300 * dt
         elif direction =='left':
             if self.player_facing=='right':
-                self.image=self.image_left
+                self.current_image=self.image_left
                 self.player_facing='left'
             if self.move_left == True:
                 self.player_position.x -= 300 * dt
+    
+    #fonction teleport changeant la position du joueur sur l'écran
+    def teleport(self, coords = pygame.Vector2(44, 400)):
+        self.player_position = coords
+    
     
 #création de la classe "Backgroud" permettant de stocker les informations relatives au fond du jeu
 class Background:
@@ -123,19 +129,121 @@ class Blocks:
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
-#créat
+#création de la classe "World_data" contenant toutes les informations
+
+class World_data:
+    #initialisation
+    def __init__(self):
+        self.player = Player()
+        self.background = Background()
+        self.blocs = Blocks()
+        self.gravite = 10
+        self.resistance = 0
+        self.collision = False
+
+    #fonction "change_level" permettant de passer d'un niveau à un autre
+    def change_level(self):
+        self.blocs.current_level += 1
+        self.player.teleport()
+    
+    #fonction "gravite_jeu" permettant de simuler la gravité du jeu
+    def gravite_jeu(self,joueur):
+        self.player.player_position.y += self.gravite+self.resistance
+
+    #fonction "display" permettant d'afficher les elements du jeu
+    def display(self):
+        screen.blit(self.background.actual,(0,0))
+        screen.blit(self.player.current_image,self.player.player_position)
+        self.blocs.display(self.background.dim)
+    
+    #fonction "collisions" permettant de déctecter les collisions et agir en conséquence
+    def collisions(self):
+        self.collision = False
+        left_collision = False
+        right_collision = False
+        #top_collision = False
+        for bloc in self.blocs.rects:
+            if bloc.colliderect(self.player.rect):
+                self.collision = True
+
+            bloc1 = bloc
+            bloc2 = bloc
+            bloc2.y+=5
+            bloc1.y+=5
+            bloc1.x-=5
+            bloc2.x+=5
+            if bloc1.colliderect(self.player.rect):
+                left_collision = True
+            if bloc2.colliderect(self.player.rect):
+                right_collision=True
+
+        if left_collision == True:
+            self.player.move_left = False
+            self.player.move_right = True
+        if right_collision == True:
+            self.player.move_right = False
+            self.player.move_left = True
+        if right_collision == True and left_collision == True:
+            self.player.move_left = False
+            self.player.move_right= False
+        if right_collision == False and left_collision == False:
+            self.player.move_left = True
+            self.player.move_right = True
+        
+        
+        if world.background.dim == 0:
+            if self.blocs.specialrect.colliderect(self.player.rect):
+                self.change_level()
+        if self.collision == True:
+            self.resistance =  -10
+        else:
+            self.resistance = 0
+
+
+world = World_data()
+
+#lancement du jeu 
+while running == True:
+    # code permettant de fermer le jeu quand la fenetre est fermée
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running=False
+
+    #appel de la fonction display affichant tout le contenu du jeu
+    world.display()
+    #appel de la fonction "gravite_jeu" simulant la gravité
+    world.gravite_jeu(world.player)
+    #appel de la fonction "get_rekt" actualisant le rect du joueur
+    world.player.get_rekt()
+    #appel de la fonction "collisions" détéctant les collisions
+    world.collisions()
+
+
+    
+    #récupération des touches presséees
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        world.player.move('right')
+    if keys[pygame.K_q] or keys[pygame.K_LEFT]:
+        world.player.move('left')
+    if keys[pygame.K_SPACE]:
+        if world.collision==True:
+            world.player.velocity=(700,20)
+
+
+    world.player.player_position.y -= world.player.velocity[0] * dt
+    world.player.velocity = (world.player.velocity[0],world.player.velocity[1]-1)
+    if world.player.velocity[1]==0:
+        world.player.velocity=(0,0)
+
+    if keys[pygame.K_j] or keys[pygame.K_e]:
+        world.background.switch()
+        time.sleep(0.15)
+
+    pygame.display.flip()
+    dt = clock.tick(60) / 1000
 """
 # à ajouter 
-
-    def change_level(self):
-        blocks.wld+=1
-        player_1.player_position = pygame.Vector2(44, 400)
-
-
-    self.gravite = 10
-    self.resistance = 0
-    def gravite_jeu(self,joueur):
-        joueur.player_position.y += self.gravite+self.resistance
 
     
 """
