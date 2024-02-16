@@ -9,8 +9,8 @@ color = ['white','brown','green']
 def clic(x,y):
     if liste_boutons[x][y]['bg']=='white':
         liste_finale[x][y]=1
-        liste_boutons[x][y]['bg']='brown'
-    elif liste_boutons[x][y]['bg']=='brown':
+        liste_boutons[x][y]['bg']='#915D3D'
+    elif liste_boutons[x][y]['bg']=='#915D3D':
         liste_finale[x][y]=2
         liste_boutons[x][y]['bg']='green'
     elif liste_boutons[x][y]['bg']=='green':
