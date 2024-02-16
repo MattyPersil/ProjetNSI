@@ -93,6 +93,7 @@ class  blcks(pygame.sprite.Sprite):
         self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
         self.spike = pygame.transform.scale(pygame.image.load("assets/pique.png"),self.image_size)
+        self.spike = pygame.transform.scale(pygame.image.load("assets/hellstone.png"),self.image_size)
         self.rects = [] 
         self.specialrect = None
         self.gravite = 10
