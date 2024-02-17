@@ -92,16 +92,10 @@ class  blcks(pygame.sprite.Sprite):
         self.flowers = pygame.transform.scale(pygame.image.load("assets/flowers.png"),self.image_size)
         self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
-        self.spike = pygame.transform.scale(pygame.image.load("assets/spike.png"),self.image_size)
-        self.hellstone = pygame.transform.scale(pygame.image.load("assets/hellstone.png"),self.image_size)
-        self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
-        self.hellgrass = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
-        self.helltrashcan = pygame.transform.scale(pygame.image.load("assets/helltrashcan.png"),self.image_size)
-        self.hellflower = pygame.transform.scale(pygame.image.load("assets/hellflowers.png"),self.image_size)
-        self.hellspike = pygame.transform.scale(pygame.image.load("assets/hellspike.png"),self.image_size)
+        #self.spike = pygame.transform.scale(pygame.image.load("assets/pique.png"),self.image_size)
         self.rects = [] 
         self.specialrect = None
-        self.gravite = 10
+        self.gravite = 10   
         self.resistance = 0
         self.levels = [(level_test_1,level_test_2),
                        (level_2_world_1,level_2_world_2),
