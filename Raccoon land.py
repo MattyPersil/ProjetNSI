@@ -112,7 +112,7 @@ class  blcks(pygame.sprite.Sprite):
                        (level_7_world_1,level_7_world_2),
                        (level_8_world_1,level_8_world_2)]
         self.wld = 0
-
+ 
     def display(self):
         self.rects=[]
         self.specialrect = None
