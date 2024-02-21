@@ -17,6 +17,7 @@ pygame.display.set_caption('Raccoon Land')
 class Player:
     #initialisation
     def __init__(self):
+        self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
         self.hp = 3
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
@@ -49,8 +50,11 @@ class Player:
                 self.player_position.x -= 300 * dt
     
     #fonction teleport changeant la position du joueur sur l'écran
-    def teleport(self, coords = pygame.Vector2(44, 400)):
-        self.player_position = coords
+    def teleport(self):
+        print('teleport')
+        self.player_position = self.position_default
+        print('teleported')
+
     
     
 #création de la classe "Backgroud" permettant de stocker les informations relatives au fond du jeu
@@ -229,6 +233,8 @@ while running == True:
     if keys[pygame.K_SPACE]:
         if world.collision==True:
             world.player.velocity=(700,20)
+    if keys[pygame.K_p]:
+        world.change_level()
 
 
     world.player.player_position.y -= world.player.velocity[0] * dt
