@@ -37,36 +37,6 @@ def clic(x,y):
     elif actual_color == '#74E567':
         liste_finale[x][y]=10
 
-    """
-    if liste_boutons[x][y]['bg']=='white':
-        liste_finale[x][y]=1
-        liste_boutons[x][y]['bg']='#915D3D'
-    elif liste_boutons[x][y]['bg']=='#915D3D':
-        liste_finale[x][y]=2
-        liste_boutons[x][y]['bg']='green'
-    elif liste_boutons[x][y]['bg']=='green':
-        liste_finale[x][y]=3
-        liste_boutons[x][y]['bg']='black'
-    elif liste_boutons[x][y]['bg']=='black':
-        liste_finale[x][y]=4
-        liste_boutons[x][y]['bg']='yellow'
-    elif liste_boutons[x][y]['bg']=='yellow':
-        liste_finale[x][y]=5
-        liste_boutons[x][y]['bg']='cyan'
-    elif liste_boutons[x][y]['bg']=='cyan':
-        liste_finale[x][y]=6
-        liste_boutons[x][y]['bg']='blue'
-    elif liste_boutons[x][y]['bg']=='blue':
-        liste_finale[x][y]=9
-        liste_boutons[x][y]['bg']='#8712E8'
-    elif liste_boutons[x][y]['bg']=='#8712E8':
-        liste_finale[x][y]=10
-        liste_boutons[x][y]['bg']='#74E567'
-    elif liste_boutons[x][y]['bg']=='#74E567':
-        liste_finale[x][y]=0
-        liste_boutons[x][y]['bg']='white'
-        """
-
 def change_color(couleur,coor):
     global actual_button,actual_color
     print(actual_color)
@@ -75,8 +45,6 @@ def change_color(couleur,coor):
     actual_color = couleur
     liste_boutons_2[coor]['text']=actual_color
     actual_button = coor
-
-
 
 
 
