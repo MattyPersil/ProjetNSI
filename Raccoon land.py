@@ -1,7 +1,7 @@
 #importation de pygame et mise en place des variables nécéssaires
 import pygame
 import time
-from liste_des_levels import *
+from liste_des_levels  import *
 pygame.init
 screen = pygame.display.set_mode((1000,600))
 clock = pygame.time.Clock()
