@@ -97,7 +97,8 @@ class Blocks:
                        (level_5_world_1,level_5_world_2),
                        (level_6_world_1,level_6_world_2),
                        (level_7_world_1,level_7_world_2),
-                       (level_8_world_1,level_8_world_2)]
+                       (level_8_world_1,level_8_world_2),
+                       (level_9_world_1,level_9_world_2)]
         self.current_level = 0
 
     #fonction "display" permettant d'afficher les blocs
