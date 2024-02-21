@@ -50,12 +50,9 @@ class Player:
                 self.player_position.x -= 300 * dt
     
     #fonction teleport changeant la position du joueur sur l'écran
-    def teleport(self, destination = None):
-        if destination == None:
-            self.position_default = pygame.Vector2(44, 400)
-            destination = self.position_default
+    def teleport(self):
         print('teleport')
-        self.player_position = destination
+        self.player_position = self.position_default
         print('teleported')
 
     
@@ -239,7 +236,6 @@ while running == True:
             world.player.velocity=(700,20)
     if keys[pygame.K_p]:
         world.change_level()
-        time.sleep(1)
 
 
     world.player.player_position.y -= world.player.velocity[0] * dt
