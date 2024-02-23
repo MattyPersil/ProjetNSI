@@ -28,6 +28,8 @@ class Player:
         self.velocity = (0,0)
         self.move_left = True
         self.move_right = True
+        self.spike_cooldown = 0
+
 
 
     #fonction "get_rekt" permettant de mettre à jour le rect du joueur
@@ -92,7 +94,8 @@ class Blocks:
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
         #self.spike = pygame.transform.scale(pygame.image.load("assets/pique.png"),self.image_size)
-        self.rects = [] 
+        self.rects = []
+        self.spikerect = [] 
         self.specialrect = None
         self.levels = [(level_test_1,level_test_2),
                        (level_2_world_1,level_2_world_2),
@@ -109,6 +112,7 @@ class Blocks:
     def display(self,dim):
         self.rects=[]
         self.specialrect = None
+        self.spikerect = []
         w = self.levels[self.current_level][dim]
         
         y=1
@@ -134,10 +138,10 @@ class Blocks:
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 10:
                     screen.blit(self.spike,(x,y))
-                    #self.rects.append(self.spike.get_rect(topleft=(x,y)))
+                    self.spikerect.append(self.spike.get_rect(topleft=(x,y)))
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
-                    self.specialrect = self.change_level_block.get_rect(topleft=(x,y))
+                    self.specialrect = self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
@@ -167,6 +171,14 @@ class World_data:
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
         self.blocs.display(self.background.dim)
+    
+    #fonction spike_collision 
+    def spike_collision(self):
+        if self.player.spike_cooldown == 0:
+            self.player.spike_cooldown = 60
+            self.player.hp -= 1
+            self.player.velocity = (700,20)
+        print(self.player.hp)
     
     #fonction "collisions" permettant de déctecter les collisions et agir en conséquence
     def collisions(self):
@@ -206,6 +218,11 @@ class World_data:
         if world.background.dim == 0:
             if self.blocs.specialrect.colliderect(self.player.rect):
                 self.change_level()
+
+        for spike in self.blocs.spikerect:
+            if spike.colliderect(self.player.rect):
+                self.spike_collision()
+
         if self.collision == True:
             self.resistance =  -10
         else:
@@ -245,7 +262,8 @@ while running == True:
         world.change_level()
         time.sleep(1)
 
-
+    if world.player.spike_cooldown > 1:
+        world.player.spike_cooldown-=1
     world.player.player_position.y -= world.player.velocity[0] * dt
     world.player.velocity = (world.player.velocity[0],world.player.velocity[1]-1)
     if world.player.velocity[1]==0:
