@@ -2,7 +2,7 @@
 import pygame
 import time
 from liste_des_levels import *
-
+from liste_des_minijeux import *
 #initialisation de pygame 
 pygame.init
 screen = pygame.display.set_mode((1000,600))
@@ -29,7 +29,7 @@ class Player:
         self.move_left = True
         self.move_right = True
         self.spike_cooldown = 0
-
+        self.allow_move = True
 
 
     #fonction "get_rekt" permettant de mettre à jour le rect du joueur
@@ -38,18 +38,19 @@ class Player:
 
     #fonction "move" permettant le déplacement du joueur ainsi que le changement de son orientation
     def move(self,direction):
-        if direction == 'right':
-            if self.player_facing=='left':
-                self.current_image=self.image_right
-                self.player_facing='right'
-            if self.move_right==True:
-                self.player_position.x += 300 * dt
-        elif direction =='left':
-            if self.player_facing=='right':
-                self.current_image=self.image_left
-                self.player_facing='left'
-            if self.move_left == True:
-                self.player_position.x -= 300 * dt
+        if self.allow_move == True:
+            if direction == 'right':
+                if self.player_facing=='left':
+                    self.current_image=self.image_right
+                    self.player_facing='right'
+                if self.move_right==True:
+                    self.player_position.x += 300 * dt
+            elif direction =='left':
+                if self.player_facing=='right':
+                    self.current_image=self.image_left
+                    self.player_facing='left'
+                if self.move_left == True:
+                    self.player_position.x -= 300 * dt
     
     #fonction teleport changeant la position du joueur sur l'écran
     def teleport(self, destination = None):
@@ -97,6 +98,7 @@ class Blocks:
         self.rects = []
         self.spikerect = [] 
         self.specialrect = None
+        self.trashcanrect = None
         self.levels = [(level_test_1,level_test_2),
                        (level_2_world_1,level_2_world_2),
                        (level_3_world_1,level_3_world_2),
@@ -127,15 +129,15 @@ class Blocks:
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 3:
                     screen.blit(self.stone,(x,y))
-                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                    self.rects.append(self.stone.get_rect(topleft=(x,y)))
                 if n == 4:
                     screen.blit(self.flowers,(x,y))
                 if n == 5:
                     screen.blit(self.cloud,(x,y))
-                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                    self.rects.append(self.cloud.get_rect(topleft=(x,y)))
                 if n == 6:
                     screen.blit(self.trashcan,(x,y))
-                    self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                    self.trashcanrect = self.trashcan.get_rect(topleft=(x,y))
                 if n == 10:
                     screen.blit(self.spike,(x,y))
                     self.spikerect.append(self.spike.get_rect(topleft=(x,y)))
@@ -145,8 +147,22 @@ class Blocks:
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
-#création de la classe "World_data" contenant toutes les informations
+#création de la classe "Minigame" permettant de stocker les informations relatives au minijeu 
+class Minigame:
+    #initialisation
+    def __init__(self):
+        self.minigame_player_image = None
+        self.minigame__image = None
+        self.minigame__image = None
+        self.minigame__image = None
+        self.minigame__image = None
+        self.minigame__image = None
+        self.minigame__image = None
+        self.minigame__background = pygame.image.transform(pygame.image.load("assets/ground.jpg"),(1000,600))
+        self.minigame_levels = []
+    #
 
+#création de la classe "World_data" contenant toutes les informations
 class World_data:
     #initialisation
     def __init__(self):
@@ -228,6 +244,10 @@ class World_data:
         else:
             self.resistance = 0
 
+    #fonction minigame permettant d'activer le minijeu
+    def minigame(self):
+        if self.blocs.trashcanrect.colliderect(self.player.rect):
+            
 
 world = World_data()
 
@@ -259,15 +279,20 @@ while running == True:
         if world.collision==True:
             world.player.velocity=(700,20)
     if keys[pygame.K_p]:
-        world.change_level()
-        time.sleep(1)
+        if world.player.allow_move == True:
+            world.change_level()
+            time.sleep(1)
+    if keys[pygame.K_f]:
+        world.minigame()
 
     if world.player.spike_cooldown > 1:
         world.player.spike_cooldown-=1
-    world.player.player_position.y -= world.player.velocity[0] * dt
-    world.player.velocity = (world.player.velocity[0],world.player.velocity[1]-1)
-    if world.player.velocity[1]==0:
-        world.player.velocity=(0,0)
+        
+    if world.player.allow_move == True:
+        world.player.player_position.y -= world.player.velocity[0] * dt
+        world.player.velocity = (world.player.velocity[0],world.player.velocity[1]-1)
+        if world.player.velocity[1]==0:
+            world.player.velocity=(0,0)
 
     if keys[pygame.K_j] or keys[pygame.K_e]:
         world.background.switch(world.player)
