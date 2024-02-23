@@ -9,14 +9,13 @@ colors = ['white','#939597','#BED3C3','#4A919E','#08C5D1','#00353F','#242423','#
 actual_color = colors[0]
 actual_button = 0
 
-#fonction clic 
+#fonction clic
 def clic(x,y):
     liste_boutons[y][x]['bg'] = actual_color
     liste_finale[y][x] = colors.index(actual_color)
 
 def change_color(couleur,coor):
     global actual_color,actual_button
-    print(actual_color)
     liste_boutons_2[actual_button]['text']=''
     actual_color = couleur
     liste_boutons_2[coor]['text']=actual_color
