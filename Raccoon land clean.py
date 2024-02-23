@@ -50,11 +50,11 @@ class Player:
                 self.player_position.x -= 300 * dt
     
     #fonction teleport changeant la position du joueur sur l'écran
-    def teleport(self):
-        print('teleport')
-        self.player_position = self.position_default
-        print('teleported')
-
+    def teleport(self, destination = None):
+        if destination == None:
+            self.position_default = pygame.Vector2(44, 400)
+            destination = self.position_default
+        self.player_position = destination
     
     
 #création de la classe "Backgroud" permettant de stocker les informations relatives au fond du jeu
@@ -83,6 +83,7 @@ class Blocks:
         self.dirt = pygame.transform.scale(pygame.image.load("assets/dirt.png"),self.image_size)
         self.stone = pygame.transform.scale(pygame.image.load("assets/Stone.png"),self.image_size)
         self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
+        self.spike = pygame.transform.scale(pygame.image.load("assets/spike.png"), self.image_size)
         self.flowers = pygame.transform.scale(pygame.image.load("assets/flowers.png"),self.image_size)
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
@@ -97,7 +98,8 @@ class Blocks:
                        (level_5_world_1,level_5_world_2),
                        (level_6_world_1,level_6_world_2),
                        (level_7_world_1,level_7_world_2),
-                       (level_8_world_1,level_8_world_2)]
+                       (level_8_world_1,level_8_world_2),
+                       (level_9_world_1,level_9_world_2)]
         self.current_level = 0
 
     #fonction "display" permettant d'afficher les blocs
@@ -127,6 +129,9 @@ class Blocks:
                 if n == 6:
                     screen.blit(self.trashcan,(x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
+                if n == 10:
+                    screen.blit(self.spike,(x,y))
+                    self.rects.append(self.spike.get_rect(topleft=(x,y)))
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
                     self.specialrect = self.change_level_block.get_rect(topleft=(x,y))
@@ -235,6 +240,7 @@ while running == True:
             world.player.velocity=(700,20)
     if keys[pygame.K_p]:
         world.change_level()
+        time.sleep(1)
 
 
     world.player.player_position.y -= world.player.velocity[0] * dt
