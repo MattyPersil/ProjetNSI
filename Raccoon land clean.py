@@ -55,6 +55,7 @@ class Player:
             self.position_default = pygame.Vector2(44, 400)
             destination = self.position_default
         self.player_position = destination
+        self.velocity = (0,0)
     
     
 #création de la classe "Backgroud" permettant de stocker les informations relatives au fond du jeu
@@ -67,13 +68,15 @@ class Background:
         self.actual=self.sky0
 
     #fonction "switch" permettant d'alterner entre les dimensions
-    def switch(self):
+    def switch(self,player):
         if self.dim==0:
             self.actual=self.sky1
             self.dim=1
         else:
             self.actual=self.sky0
             self.dim=0
+        player.velocity = (0,0)
+
 
 #création de la classe "Blocks" contenant les informations sur tout les blocks
 class Blocks:
@@ -131,7 +134,7 @@ class Blocks:
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 10:
                     screen.blit(self.spike,(x,y))
-                    self.rects.append(self.spike.get_rect(topleft=(x,y)))
+                    #self.rects.append(self.spike.get_rect(topleft=(x,y)))
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
                     self.specialrect = self.change_level_block.get_rect(topleft=(x,y))
@@ -249,7 +252,7 @@ while running == True:
         world.player.velocity=(0,0)
 
     if keys[pygame.K_j] or keys[pygame.K_e]:
-        world.background.switch()
+        world.background.switch(world.player)
         time.sleep(0.15)
 
     pygame.display.flip()
