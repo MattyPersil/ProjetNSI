@@ -156,11 +156,11 @@ class Minigame:
         self.minigame_ground_image = pygame.transform.scale(pygame.image.load("assets/ground_minigame.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_wall_image = pygame.transform.scale(pygame.image.load("assets/Wall.png"),((screen.get_width()/27)+0.5,(screen.get_height()/16)+0.5))
         self.minigame_moving_wall_image = pygame.transform.scale(pygame.image.load("assets/moving_wall.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
-        self.minigame_button_image = None
+        self.minigame_button_image = pygame.transform.scale(pygame.image.load("assets/pizza.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_plate_image = None
-        self.minigame_trash_image = pygame.transform.scale(pygame.image.load("assets/Item_Trash_reference.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
-        self.minigame_golden_trash_image = None
-        self.minigame_deadly_trash_image = None
+        self.minigame_trash_image = pygame.transform.scale(pygame.image.load("assets/normal_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
+        self.minigame_golden_trash_image = pygame.transform.scale(pygame.image.load("assets/golden_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
+        self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.png"),(1000,600))
         self.minigame_levels = [level_1_mini]
     
@@ -177,17 +177,20 @@ class Minigame:
                     screen.blit(self.minigame_wall_image,(x,y))
                 #if j == 2:
                     #screen.blit(self.minigame_plate_image,(x,y))
-                #if j == 3:
-                    #screen.blit(self.minigame_button_image,(x,y))
+                if j == 3:
+                    screen.blit(self.minigame_ground_image,(x,y))
+                    screen.blit(self.minigame_button_image,(x,y))
                 if j == 4:
                     screen.blit(self.minigame_moving_wall_image,(x,y))
-                if j not in[1,4,0]:
+                if j == 5:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_trash_image,(x,y))
-                #if j == 6:
-                    #screen.blit(self.minigame_golden_trash_image,(x,y))
-                #if j == 7:
-                    #screen.blit(self.minigame_deadly_trash_image,(x,y))
+                if j == 6:
+                    screen.blit(self.minigame_ground_image,(x,y))
+                    screen.blit(self.minigame_golden_trash_image,(x,y))
+                if j == 7:
+                    screen.blit(self.minigame_ground_image,(x,y))
+                    screen.blit(self.minigame_deadly_trash_image,(x,y))
                 x+=image_size[0]-1
             y+=image_size[1]-1
                     
