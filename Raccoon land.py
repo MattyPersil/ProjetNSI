@@ -247,7 +247,7 @@ class World_data:
     #fonction minigame permettant d'activer le minijeu
     def minigame(self):
         if self.blocs.trashcanrect.colliderect(self.player.rect):
-            
+            pass
 
 world = World_data()
 
