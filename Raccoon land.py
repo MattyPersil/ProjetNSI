@@ -152,14 +152,15 @@ class Minigame:
     #initialisation
     def __init__(self):
         self.minigame_player_image = None
-        self.minigame_wall_image = None
-        self.minigame_moving_wall_image = None
+        self.minigame_is_activated = False
+        self.minigame_wall_image = pygame.transform.scale(pygame.image.load("assets/Stone.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
+        self.minigame_moving_wall_image = pygame.transform.scale(pygame.image.load("assets/Stone.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_button_image = None
         self.minigame_plate_image = None
-        self.minigame_trash_image = None
+        self.minigame_trash_image = pygame.transform.scale(pygame.image.load("assets/Item_Trash_reference.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_golden_trash_image = None
         self.minigame_deadly_trash_image = None
-        self.minigame_background = pygame.image.transform(pygame.image.load("assets/ground.jpg"),(1000,600))
+        self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.jpg"),(1000,600))
         self.minigame_levels = [level_1_mini]
     
     #fonction render permettant d'afficher le minijeu
@@ -167,24 +168,25 @@ class Minigame:
         screen.blit(self.minigame_background,(0,0))
         y = 1
         for i in self.minigame_levels[actual_level]:
-            x = 6*image_size
+            x = 5*image_size[0] + image_size[0]/2
             for j in i:
                 if j == 1:
+
                     screen.blit(self.minigame_wall_image,(x,y))
-                if j == 2:
-                    screen.blit(self.minigame_plate_image,(x,y))
-                if j == 3:
-                    screen.blit(self.minigame_button_image,(x,y))
+                #if j == 2:
+                    #screen.blit(self.minigame_plate_image,(x,y))
+                #if j == 3:
+                    #screen.blit(self.minigame_button_image,(x,y))
                 if j == 4:
                     screen.blit(self.minigame_moving_wall_image,(x,y))
-                if j == 5:
+                if j not in[1,4,0]:
                     screen.blit(self.minigame_trash_image,(x,y))
-                if j == 6:
-                    screen.blit(self.minigame_golden_trash_image,(x,y))
-                if j == 7:
-                    screen.blit(self.minigame_deadly_trash_image,(x,y))
-                x+=image_size
-            y+=image_size
+                #if j == 6:
+                    #screen.blit(self.minigame_golden_trash_image,(x,y))
+                #if j == 7:
+                    #screen.blit(self.minigame_deadly_trash_image,(x,y))
+                x+=image_size[0]
+            y+=image_size[1]
                     
 
 #création de la classe "World_data" contenant toutes les informations
@@ -310,8 +312,11 @@ while running == True:
             world.change_level()
             time.sleep(1)
     if keys[pygame.K_f]:
-        world.minigame_activate()
-
+        world.minigame.minigame_is_activated = True
+    
+    if world.minigame.minigame_is_activated == True:
+        world.minigame_activate(world.player)
+        
     if world.player.spike_cooldown > 1:
         world.player.spike_cooldown-=1
         
