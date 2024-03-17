@@ -3,7 +3,6 @@ import pygame
 import time
 from liste_des_levels import *
 from liste_des_minijeux import *
-from random import randint as rnd
 #initialisation de pygame 
 pygame.init
 screen = pygame.display.set_mode((1000,600))
