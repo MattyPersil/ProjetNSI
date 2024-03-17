@@ -3,6 +3,7 @@ import pygame
 import time
 from liste_des_levels import *
 from liste_des_minijeux import *
+from random import randint as rnd
 #initialisation de pygame 
 pygame.init
 screen = pygame.display.set_mode((1000,600))
@@ -91,10 +92,17 @@ class Blocks:
         self.cloud = pygame.transform.scale(pygame.image.load("assets/cloud.png"),self.image_size)
         self.spike = pygame.transform.scale(pygame.image.load("assets/spike.png"), self.image_size)
         self.flowers = pygame.transform.scale(pygame.image.load("assets/flowers.png"),self.image_size)
+        self.trashcan_f = pygame.transform.scale(pygame.image.load("assets/trashcan_f.png"),self.image_size)
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
-        #self.spike = pygame.transform.scale(pygame.image.load("assets/pique.png"),self.image_size)
+
+        self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
+        self.hellstone = pygame.transform.scale(pygame.image.load("assets/hellstone.png"),self.image_size)
+        self.hellspike = pygame.transform.scale(pygame.image.load("assets/hellspike.png"),self.image_size)
+        self.helltrashcan = pygame.transform.scale(pygame.image.load("assets/helltrashcan.png"),self.image_size)
+        self.hellgrassblock = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
+
         self.rects = []
         self.spikerect = [] 
         self.specialrect = None
@@ -111,7 +119,7 @@ class Blocks:
         self.current_level = 0
 
     #fonction "display" permettant d'afficher les blocs
-    def display(self,dim):
+    def display(self,dim,player):
         self.rects=[]
         self.specialrect = None
         self.spikerect = []
@@ -122,13 +130,24 @@ class Blocks:
             x=1
             for n in i:
                 if n == 1:
-                    screen.blit(self.dirt ,(x,y))
+                    if dim == 0:
+                        screen.blit(self.dirt ,(x,y))
+                    else:
+                        screen.blit(self.helldirt ,(x,y))
+
                     self.rects.append(self.dirt.get_rect(topleft=(x,y)))
                 if n == 2:
-                    screen.blit(self.grassblock,(x,y))
+                    if dim == 0:
+                        screen.blit(self.grassblock ,(x,y))
+                    else:
+                        screen.blit(self.hellgrassblock ,(x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 3:
-                    screen.blit(self.stone,(x,y))
+                    
+                    if dim == 0:
+                        screen.blit(self.stone ,(x,y))
+                    else:
+                        screen.blit(self.hellstone ,(x,y))
                     self.rects.append(self.stone.get_rect(topleft=(x,y)))
                 if n == 4:
                     screen.blit(self.flowers,(x,y))
@@ -136,10 +155,21 @@ class Blocks:
                     screen.blit(self.cloud,(x,y))
                     self.rects.append(self.cloud.get_rect(topleft=(x,y)))
                 if n == 6:
-                    screen.blit(self.trashcan,(x,y))
                     self.trashcanrect = self.trashcan.get_rect(topleft=(x,y))
+                    if self.trashcanrect.colliderect(player.rect):
+                        screen.blit(self.trashcan_f,(x,y))
+                        
+                    else:                    
+                        if dim == 0:
+                            screen.blit(self.trashcan ,(x,y))
+                        else:
+                            screen.blit(self.helltrashcan ,(x,y))                
                 if n == 10:
-                    screen.blit(self.spike,(x,y))
+                
+                    if dim == 0:
+                        screen.blit(self.spike ,(x,y))
+                    else:
+                        screen.blit(self.hellspike ,(x,y))
                     self.spikerect.append(self.spike.get_rect(topleft=(x,y)))
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
@@ -220,7 +250,7 @@ class World_data:
     def display(self):
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
-        self.blocs.display(self.background.dim)
+        self.blocs.display(self.background.dim,self.player)
     
     #fonction spike_collision 
     def spike_collision(self):
@@ -317,11 +347,16 @@ while running == True:
         if world.player.allow_move == True:
             world.change_level()
             time.sleep(1)
+    if keys[pygame.K_ESCAPE]:
+        world.minigame.minigame_is_activated = False
     if keys[pygame.K_f]:
-        world.minigame.minigame_is_activated = True
+        if world.blocs.trashcanrect.colliderect(world.player.rect):
+            world.minigame.minigame_is_activated = True
     
     if world.minigame.minigame_is_activated == True:
         world.minigame_activate(world.player)
+    else:
+        world.player.allow_move = True
         
     if world.player.spike_cooldown > 1:
         world.player.spike_cooldown-=1
