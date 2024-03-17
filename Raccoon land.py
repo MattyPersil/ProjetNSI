@@ -176,17 +176,28 @@ class Blocks:
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
+#création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
+class Minigame_player:
+    #initialisation
+    def __init__(self):
+        self.minigame_player_image = pygame.transform.scale(pygame.image.load("assets/minigame_racoon.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
+        self.player_position = {'y' :14, 'x':1}
+    #fonction render permettant d'afficher le player
+    def render(self,image_size):
+        screen.blit(self.minigame_player_image,(self.player_position['x']*(image_size[0]-1) +(5*image_size[0] + image_size[0]/2),self.player_position['y']*(image_size[0]-0.5)))
+
 #création de la classe "Minigame" permettant de stocker les informations relatives au minijeu 
 class Minigame:
     #initialisation
     def __init__(self):
-        self.minigame_player_image = None
+        self.mini_player = Minigame_player()
         self.minigame_is_activated = False
+        self.moving_wall_activation = True
         self.minigame_ground_image = pygame.transform.scale(pygame.image.load("assets/ground_minigame.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_wall_image = pygame.transform.scale(pygame.image.load("assets/Wall.png"),((screen.get_width()/27)+0.5,(screen.get_height()/16)+0.5))
         self.minigame_moving_wall_image = pygame.transform.scale(pygame.image.load("assets/moving_wall.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_button_image = pygame.transform.scale(pygame.image.load("assets/pizza.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
-        self.minigame_plate_image = None
+        self.minigame_plate_image = pygame.transform.scale(pygame.image.load("assets/plate.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_trash_image = pygame.transform.scale(pygame.image.load("assets/normal_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_golden_trash_image = pygame.transform.scale(pygame.image.load("assets/golden_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
@@ -196,7 +207,7 @@ class Minigame:
     #fonction render permettant d'afficher le minijeu
     def render(self,image_size,actual_level):
         screen.blit(self.minigame_background,(0,0))
-        y = 1
+        y = 0
         for i in self.minigame_levels[actual_level]:
             x = 5*image_size[0] + image_size[0]/2
             for j in i:
@@ -204,25 +215,77 @@ class Minigame:
                     screen.blit(self.minigame_ground_image,(x,y))
                 if j == 1:
                     screen.blit(self.minigame_wall_image,(x,y))
-                #if j == 2:
-                    #screen.blit(self.minigame_plate_image,(x,y))
+                if j == 2:
+                    screen.blit(self.minigame_ground_image,(x,y))
+                if j == 10:
+                    screen.blit(self.minigame_ground_image,(x,y))
+                    screen.blit(self.minigame_plate_image,(x,y))
                 if j == 3:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_button_image,(x,y))
                 if j == 4:
-                    screen.blit(self.minigame_moving_wall_image,(x,y))
-                if j == 5:
-                    screen.blit(self.minigame_ground_image,(x,y))
-                    screen.blit(self.minigame_trash_image,(x,y))
+                    if self.moving_wall_activation == True:
+                        screen.blit(self.minigame_moving_wall_image,(x,y))
+                    else:
+                        screen.blit(self.minigame_ground_image,(x,y))
                 if j == 6:
                     screen.blit(self.minigame_ground_image,(x,y))
-                    screen.blit(self.minigame_golden_trash_image,(x,y))
+                    screen.blit(self.minigame_trash_image,(x,y))
                 if j == 7:
+                    screen.blit(self.minigame_ground_image,(x,y))
+                    screen.blit(self.minigame_golden_trash_image,(x,y))
+                if j == 8:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_deadly_trash_image,(x,y))
                 x+=image_size[0]-1
             y+=image_size[1]-1
-                    
+        self.mini_player.render(image_size)
+
+    #fonction move permettant de bouger le joueur dans le minijeu
+    def move(self,keys,actual_level):
+        level = self.minigame_levels[actual_level]
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            right_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']+1]
+            if right_block in [0,6,3,2,10]:
+                self.mini_player.player_position['x'] += 1
+            if right_block == 4 and self.moving_wall_activation == False:
+                self.mini_player.player_position['x'] += 1
+
+                
+        if keys[pygame.K_LEFT] or keys[pygame.K_q]:
+            left_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']-1]
+            if left_block in [0,6,3,2,10]:
+                self.mini_player.player_position['x'] -= 1
+            if left_block == 4 and self.moving_wall_activation == False:
+                self.mini_player.player_position['x'] -= 1
+            
+        if keys[pygame.K_UP] or keys[pygame.K_z]:
+            upper_block = level[self.mini_player.player_position['y']-1][self.mini_player.player_position['x']]
+            if upper_block in [0,6,3,2,10]:
+                self.mini_player.player_position['y'] -= 1
+            if upper_block == 4 and self.moving_wall_activation == False:
+                self.mini_player.player_position['y'] -= 1
+
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            lower_block = level[self.mini_player.player_position['y']+1][self.mini_player.player_position['x']]
+            if lower_block in [0,6,3,2,10]:
+                self.mini_player.player_position['y'] += 1
+            if lower_block == 4 and self.moving_wall_activation == False:
+                self.mini_player.player_position['y'] += 1
+
+        time.sleep(0.05)
+        actual_block = self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']]
+        if actual_block == 6:
+            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
+        if actual_block == 3:
+            self.moving_wall_activation = False
+        if actual_block == 2 or actual_block == 10:
+            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =10
+            self.moving_wall_activation = True
+
+
+
+    
 
 #création de la classe "World_data" contenant toutes les informations
 class World_data:
@@ -239,6 +302,8 @@ class World_data:
     #fonction "change_level" permettant de passer d'un niveau à un autre
     def change_level(self):
         self.blocs.current_level += 1
+        self.minigame.mini_player.player_position = {'y' :14, 'x':1}
+
         self.player.teleport()
     
     #fonction "gravite_jeu" permettant de simuler la gravité du jeu
@@ -309,9 +374,8 @@ class World_data:
 
     #fonction minigame permettant d'activer le minijeu
     def minigame_activate(self,player):
-        if self.blocs.trashcanrect.colliderect(self.player.rect):
-            player.allow_move = False
-            self.minigame.render(self.blocs.image_size,self.blocs.current_level)
+        player.allow_move = False
+        self.minigame.render(self.blocs.image_size,self.blocs.current_level)
 
 world = World_data()
 
@@ -330,8 +394,6 @@ while running == True:
     world.player.get_rekt()
     #appel de la fonction "collisions" détéctant les collisions
     world.collisions()
-
-
     
     #récupération des touches presséees
     keys = pygame.key.get_pressed()
@@ -351,9 +413,13 @@ while running == True:
     if keys[pygame.K_f]:
         if world.blocs.trashcanrect.colliderect(world.player.rect):
             world.minigame.minigame_is_activated = True
-    
+    if keys[pygame.K_m]:
+        world.minigame.minigame_is_activated = True
     if world.minigame.minigame_is_activated == True:
         world.minigame_activate(world.player)
+        world.minigame.move(keys,world.blocs.current_level)
+
+
     else:
         world.player.allow_move = True
         
