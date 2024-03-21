@@ -5,6 +5,7 @@ from liste_des_levels import *
 from liste_des_minijeux import *
 #initialisation de pygame 
 pygame.init
+pygame.font.init()
 screen = pygame.display.set_mode((1000,600))
 clock = pygame.time.Clock()
 running = True
@@ -186,6 +187,28 @@ class Minigame_player:
     def render(self,image_size):
         screen.blit(self.minigame_player_image,(self.player_position['x']*(image_size[0]-1) +(5*image_size[0] + image_size[0]/2),self.player_position['y']*(image_size[0]-0.5)))
 
+#création de la classe "Minigame_counters" permettant d'afficher et compter le nombre d'argent du jeu
+class Minigame_counters:
+    #initialisation
+    def __init__(self,normal,golden):
+        self.normal_image = normal
+        self.normal_count = 0
+        self.normal_coords = (screen.get_width()/5*4,screen.get_height()/10)
+        self.golden_image = golden
+        self.golden_count = 0
+        self.golden_coords = (screen.get_width()/5*4,screen.get_height()/5)
+        self.font = pygame.font.SysFont('Comic Sans MS', 30)
+
+    #fonction render_counters permettant d'afficher les compteurs
+    def render_counters(self):
+        screen.blit(self.normal_image,self.normal_coords)
+        screen.blit(self.golden_image,self.golden_coords)
+        text = self.font.render(str(self.normal_count), False, (0, 0, 0))
+        screen.blit(text, (self.normal_coords[0]+screen.get_width()/24,self.normal_coords[1])) 
+        text = self.font.render(str(self.golden_count), False, (0, 0, 0))
+        screen.blit(text, (self.golden_coords[0]+screen.get_width()/24,self.golden_coords[1]))
+
+
 #création de la classe "Minigame" permettant de stocker les informations relatives au minijeu 
 class Minigame:
     #initialisation
@@ -202,7 +225,8 @@ class Minigame:
         self.minigame_golden_trash_image = pygame.transform.scale(pygame.image.load("assets/golden_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.png"),(1000,600))
-        self.minigame_levels = [level_1_mini,level_2_mini,level_3_mini,level_4_mini]
+        self.minigame_levels = [level_1_mini,level_2_mini,level_3_mini,level_4_mini,level_5_mini,level_6_mini,level_7_mini,level_8_mini,level_9_mini]
+        self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
     #fonction render permettant d'afficher le minijeu
     def render(self,image_size,actual_level):
@@ -239,6 +263,7 @@ class Minigame:
                     screen.blit(self.minigame_deadly_trash_image,(x,y))
                 x+=image_size[0]-1
             y+=image_size[1]-1
+        self.counters.render_counters()
         self.mini_player.render(image_size)
 
     #fonction move permettant de bouger le joueur dans le minijeu
@@ -246,7 +271,7 @@ class Minigame:
         level = self.minigame_levels[actual_level]
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             right_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']+1]
-            if right_block in [0,6,3,2,10]:
+            if right_block in [0,6,3,2,10,7]:
                 self.mini_player.player_position['x'] += 1
             if right_block == 4 and self.moving_wall_activation == False:
                 self.mini_player.player_position['x'] += 1
@@ -254,21 +279,21 @@ class Minigame:
                 
         if keys[pygame.K_LEFT] or keys[pygame.K_q]:
             left_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']-1]
-            if left_block in [0,6,3,2,10]:
+            if left_block in [0,6,3,2,10,7]:
                 self.mini_player.player_position['x'] -= 1
             if left_block == 4 and self.moving_wall_activation == False:
                 self.mini_player.player_position['x'] -= 1
             
         if keys[pygame.K_UP] or keys[pygame.K_z]:
             upper_block = level[self.mini_player.player_position['y']-1][self.mini_player.player_position['x']]
-            if upper_block in [0,6,3,2,10]:
+            if upper_block in [0,6,3,2,10,7]:
                 self.mini_player.player_position['y'] -= 1
             if upper_block == 4 and self.moving_wall_activation == False:
                 self.mini_player.player_position['y'] -= 1
 
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             lower_block = level[self.mini_player.player_position['y']+1][self.mini_player.player_position['x']]
-            if lower_block in [0,6,3,2,10]:
+            if lower_block in [0,6,3,2,10,7]:
                 self.mini_player.player_position['y'] += 1
             if lower_block == 4 and self.moving_wall_activation == False:
                 self.mini_player.player_position['y'] += 1
@@ -277,6 +302,10 @@ class Minigame:
         actual_block = self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']]
         if actual_block == 6:
             self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
+            self.counters.normal_count+=1
+        if actual_block == 7:
+            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
+            self.counters.golden_count+=1
         if actual_block == 3:
             self.moving_wall_activation = False
         if actual_block == 2 or actual_block == 10:
