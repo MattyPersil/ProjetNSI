@@ -30,7 +30,6 @@ class Player:
         self.velocity = (0,0)
         self.move_left = True
         self.move_right = True
-        self.spike_cooldown = 0
         self.allow_move = True
 
 
@@ -370,10 +369,10 @@ class World_data:
     
     #fonction spike_collision 
     def spike_collision(self):
-        if self.player.spike_cooldown == 0:
-            self.player.spike_cooldown = 60
-            self.player.hp -= 1
-            self.player.velocity = (700,20)
+        self.player.hp -= 1
+        self.player.teleport()
+        if self.background.dim == 1:
+            self.background.switch(self.player)
         print(self.player.hp)
     
     #fonction "collisions" permettant de déctecter les collisions et agir en conséquence
@@ -474,7 +473,6 @@ while running == True:
 
     else:
         world.player.allow_move = True
-        
         
     if world.player.allow_move == True:
         world.player.player_position.y -= world.player.velocity[0] * dt
