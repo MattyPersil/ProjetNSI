@@ -103,6 +103,7 @@ class Blocks:
         self.hellspike = pygame.transform.scale(pygame.image.load("assets/hellspike.png"),self.image_size)
         self.helltrashcan = pygame.transform.scale(pygame.image.load("assets/helltrashcan.png"),self.image_size)
         self.hellgrassblock = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
+        self.hellflower = pygame.transform.scale(pygame.image.load("assets/hellflowers.png"),self.image_size)
 
         self.rects = []
         self.spikerect = [] 
@@ -151,7 +152,11 @@ class Blocks:
                         screen.blit(self.hellstone ,(x,y))
                     self.rects.append(self.stone.get_rect(topleft=(x,y)))
                 if n == 4:
-                    screen.blit(self.flowers,(x,y))
+                    
+                    if dim == 0:
+                        screen.blit(self.flowers ,(x,y))
+                    else:
+                        screen.blit(self.hellflower ,(x,y))
                 if n == 5:
                     screen.blit(self.cloud,(x,y))
                     self.rects.append(self.cloud.get_rect(topleft=(x,y)))
@@ -194,10 +199,10 @@ class Minigame_counters:
     def __init__(self,normal,golden):
         self.normal_image = normal
         self.normal_count = 0
-        self.normal_coords = (screen.get_width()/5*4,screen.get_height()/10)
+        self.normal_coords = (screen.get_width()/5*4,screen.get_height()/16)
         self.golden_image = golden
         self.golden_count = 0
-        self.golden_coords = (screen.get_width()/5*4,screen.get_height()/5)
+        self.golden_coords = (screen.get_width()/5*4,screen.get_height()/8)
         self.temp_counts ={'n':0,'g':0}
         self.font = pygame.font.SysFont('Comic Sans MS', 30)
 
