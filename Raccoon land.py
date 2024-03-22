@@ -232,7 +232,16 @@ class Minigame:
         self.minigame_golden_trash_image = pygame.transform.scale(pygame.image.load("assets/golden_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.png"),(1000,600))
-        self.minigame_levels = [level_1_mini,level_2_mini,level_3_mini,level_4_mini,level_5_mini,level_6_mini,level_7_mini,level_8_mini,level_9_mini]
+        self.minigame_levels = [level_1_mini,
+                                level_2_mini,
+                                level_3_mini,
+                                level_4_mini,
+                                level_5_mini,
+                                level_6_mini,
+                                level_7_mini,
+                                level_8_mini,
+                                level_9_mini,
+                                level_10_mini]
         self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
