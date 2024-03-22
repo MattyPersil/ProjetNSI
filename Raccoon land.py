@@ -3,6 +3,7 @@ import pygame
 import time
 from liste_des_levels import *
 from liste_des_minijeux import *
+import copy
 #initialisation de pygame 
 pygame.init
 pygame.font.init()
@@ -197,6 +198,7 @@ class Minigame_counters:
         self.golden_image = golden
         self.golden_count = 0
         self.golden_coords = (screen.get_width()/5*4,screen.get_height()/5)
+        self.temp_counts ={'n':0,'g':0}
         self.font = pygame.font.SysFont('Comic Sans MS', 30)
 
     #fonction render_counters permettant d'afficher les compteurs
@@ -226,6 +228,7 @@ class Minigame:
         self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.png"),(1000,600))
         self.minigame_levels = [level_1_mini,level_2_mini,level_3_mini,level_4_mini,level_5_mini,level_6_mini,level_7_mini,level_8_mini,level_9_mini]
+        self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
     #fonction render permettant d'afficher le minijeu
@@ -265,10 +268,22 @@ class Minigame:
             y+=image_size[1]-1
         self.counters.render_counters()
         self.mini_player.render(image_size)
+    
+    #fonction level_reset permettant de reset un level
+    def level_reset(self,actual_level):
+        self.minigame_levels[actual_level] = self.minigame_levels_copy[actual_level]
+        self.mini_player.player_position = {'y' :14, 'x':1}
+        self.counters.normal_count-=self.counters.temp_counts['n']
+        self.counters.golden_count-=self.counters.temp_counts['g']
+        self.counters.temp_counts = {'n':0,'g':0}
 
     #fonction move permettant de bouger le joueur dans le minijeu
     def move(self,keys,actual_level):
         level = self.minigame_levels[actual_level]
+
+        if keys[pygame.K_r]:
+            self.level_reset(actual_level)
+
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             right_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']+1]
             if right_block in [0,6,3,2,10,7]:
@@ -298,14 +313,16 @@ class Minigame:
             if lower_block == 4 and self.moving_wall_activation == False:
                 self.mini_player.player_position['y'] += 1
 
-        time.sleep(0.05)
+        time.sleep(0.1)
         actual_block = self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']]
         if actual_block == 6:
             self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
             self.counters.normal_count+=1
+            self.counters.temp_counts['n'] +=1
         if actual_block == 7:
             self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
             self.counters.golden_count+=1
+            self.counters.temp_counts['g'] +=1
         if actual_block == 3:
             self.moving_wall_activation = False
         if actual_block == 2 or actual_block == 10:
@@ -332,7 +349,7 @@ class World_data:
     def change_level(self):
         self.blocs.current_level += 1
         self.minigame.mini_player.player_position = {'y' :14, 'x':1}
-
+        self.minigame.counters.temp_counts = {'n':0,'g':0}
         self.player.teleport()
     
     #fonction "gravite_jeu" permettant de simuler la gravité du jeu
