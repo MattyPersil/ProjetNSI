@@ -30,7 +30,6 @@ class Player:
         self.velocity = (0,0)
         self.move_left = True
         self.move_right = True
-        self.spike_cooldown = 0
         self.allow_move = True
 
 
@@ -69,7 +68,7 @@ class Background:
     def __init__(self):
         self.dim = 0
         self.sky0 = pygame.transform.scale(pygame.image.load("assets/sky0.png"),(1000,600))
-        self.sky1 = pygame.transform.scale(pygame.image.load("assets/sky1.png"),(1000,600))
+        self.sky1 = pygame.transform.scale(pygame.image.load("assets/fond monde 2.png"),(1000,600))
         self.actual=self.sky0
 
     #fonction "switch" permettant d'alterner entre les dimensions
@@ -370,10 +369,10 @@ class World_data:
     
     #fonction spike_collision 
     def spike_collision(self):
-        if self.player.spike_cooldown == 0:
-            self.player.spike_cooldown = 60
-            self.player.hp -= 1
-            self.player.velocity = (700,20)
+        self.player.hp -= 1
+        self.player.teleport()
+        if self.background.dim == 1:
+            self.background.switch(self.player)
         print(self.player.hp)
     
     #fonction "collisions" permettant de déctecter les collisions et agir en conséquence
@@ -474,9 +473,6 @@ while running == True:
 
     else:
         world.player.allow_move = True
-        
-    if world.player.spike_cooldown > 1:
-        world.player.spike_cooldown-=1
         
     if world.player.allow_move == True:
         world.player.player_position.y -= world.player.velocity[0] * dt
