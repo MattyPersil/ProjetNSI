@@ -69,7 +69,7 @@ class Background:
     def __init__(self):
         self.dim = 0
         self.sky0 = pygame.transform.scale(pygame.image.load("assets/sky0.png"),(1000,600))
-        self.sky1 = pygame.transform.scale(pygame.image.load("assets/sky1.png"),(1000,600))
+        self.sky1 = pygame.transform.scale(pygame.image.load("assets/fond monde 2.png"),(1000,600))
         self.actual=self.sky0
 
     #fonction "switch" permettant d'alterner entre les dimensions
@@ -117,7 +117,8 @@ class Blocks:
                        (level_6_world_1,level_6_world_2),
                        (level_7_world_1,level_7_world_2),
                        (level_8_world_1,level_8_world_2),
-                       (level_9_world_1,level_9_world_2)]
+                       (level_9_world_1,level_9_world_2),
+                       (level_10_world_1,level_10_world_2)]
         self.current_level = 0
 
     #fonction "display" permettant d'afficher les blocs
@@ -474,8 +475,6 @@ while running == True:
     else:
         world.player.allow_move = True
         
-    if world.player.spike_cooldown > 1:
-        world.player.spike_cooldown-=1
         
     if world.player.allow_move == True:
         world.player.player_position.y -= world.player.velocity[0] * dt
