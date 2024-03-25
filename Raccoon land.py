@@ -241,7 +241,8 @@ class Minigame:
                                 level_7_mini,
                                 level_8_mini,
                                 level_9_mini,
-                                level_10_mini]
+                                level_10_mini,
+                                level_11_mini]
         self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
@@ -285,11 +286,12 @@ class Minigame:
     
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
-        self.minigame_levels[actual_level] = self.minigame_levels_copy[actual_level]
+        self.minigame_levels = copy.deepcopy(self.minigame_levels_copy)
         self.mini_player.player_position = {'y' :14, 'x':1}
         self.counters.normal_count-=self.counters.temp_counts['n']
         self.counters.golden_count-=self.counters.temp_counts['g']
         self.counters.temp_counts = {'n':0,'g':0}
+
 
     #fonction move permettant de bouger le joueur dans le minijeu
     def move(self,keys,actual_level):
