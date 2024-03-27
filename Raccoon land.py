@@ -262,6 +262,7 @@ class Minigame:
     #initialisation
     def __init__(self):
         self.mini_player = Minigame_player()
+        self.mini_player_2 = Minigame_player()
         self.minigame_is_activated = False
         self.moving_wall_activation = True
         self.minigame_ground_image = pygame.transform.scale(pygame.image.load("assets/ground_minigame.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
@@ -324,6 +325,7 @@ class Minigame:
             y+=image_size[1]-1
         self.counters.render_counters()
         self.mini_player.render(image_size)
+        self.mini_player_2.render(image_size)
     
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
@@ -341,50 +343,53 @@ class Minigame:
         if keys[pygame.K_r]:
             self.level_reset(actual_level)
 
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            right_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']+1]
-            if right_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['x'] += 1
-            if right_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['x'] += 1
+        players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
 
+        for p,k in players.items():
+            if keys[k[0]]:
+                right_block = level[p.player_position['y']][p.player_position['x']+1]
+                if right_block in [0,6,3,2,10,7]:
+                    p.player_position['x'] += 1
+                if right_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['x'] += 1
+
+                    
+            if keys[k[1]] :
+                left_block = level[p.player_position['y']][p.player_position['x']-1]
+                if left_block in [0,6,3,2,10,7]:
+                    p.player_position['x'] -= 1
+                if left_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['x'] -= 1
                 
-        if keys[pygame.K_LEFT] or keys[pygame.K_q]:
-            left_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']-1]
-            if left_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['x'] -= 1
-            if left_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['x'] -= 1
-            
-        if keys[pygame.K_UP] or keys[pygame.K_z]:
-            upper_block = level[self.mini_player.player_position['y']-1][self.mini_player.player_position['x']]
-            if upper_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['y'] -= 1
-            if upper_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['y'] -= 1
+            if keys[k[2]]:
+                upper_block = level[p.player_position['y']-1][p.player_position['x']]
+                if upper_block in [0,6,3,2,10,7]:
+                    p.player_position['y'] -= 1
+                if upper_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['y'] -= 1
 
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            lower_block = level[self.mini_player.player_position['y']+1][self.mini_player.player_position['x']]
-            if lower_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['y'] += 1
-            if lower_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['y'] += 1
+            if keys[k[3]]:
+                lower_block = level[p.player_position['y']+1][p.player_position['x']]
+                if lower_block in [0,6,3,2,10,7]:
+                    p.player_position['y'] += 1
+                if lower_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['y'] += 1
 
-        time.sleep(0.1)
-        actual_block = self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']]
-        if actual_block == 6:
-            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
-            self.counters.normal_count+=1
-            self.counters.temp_counts['n'] +=1
-        if actual_block == 7:
-            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
-            self.counters.golden_count+=1
-            self.counters.temp_counts['g'] +=1
-        if actual_block == 3:
-            self.moving_wall_activation = False
-        if actual_block == 2 or actual_block == 10:
-            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =10
-            self.moving_wall_activation = True
+            time.sleep(0.1)
+            actual_block = self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']]
+            if actual_block == 6:
+                self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =0
+                self.counters.normal_count+=1
+                self.counters.temp_counts['n'] +=1
+            if actual_block == 7:
+                self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =0
+                self.counters.golden_count+=1
+                self.counters.temp_counts['g'] +=1
+            if actual_block == 3:
+                self.moving_wall_activation = False
+            if actual_block == 2 or actual_block == 10:
+                self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =10
+                self.moving_wall_activation = True
 
 
 
