@@ -21,7 +21,7 @@ class Player:
     def __init__(self):
         self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
-        self.hp = 3
+        self.hp = 1
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
@@ -183,6 +183,47 @@ class Blocks:
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
+#création de la classe "Counters" permettant d'afficher les informations tel que la vie du joueur et le nombre de poubelles collectés
+class Counters:
+    #initialisation
+    def __init__(self,normal,normal_image,golden,golden_image,hp,font):
+        self.unit = screen.get_height()/32
+        self.normal_trash = normal
+        self.normal_image = normal_image
+        self.golden_trash = golden
+        self.golden_image = golden_image
+        self.hp = hp
+        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.hearts = {"1": [self.heart_half,self.heart_empty,self.heart_empty],
+                       "2": [self.heart_full,self.heart_empty,self.heart_empty],
+                       "3": [self.heart_full,self.heart_half,self.heart_empty],
+                       "4": [self.heart_full,self.heart_full,self.heart_empty],
+                       "5": [self.heart_full,self.heart_full,self.heart_half],
+                       "6": [self.heart_full,self.heart_full,self.heart_full]}
+        self.font = font
+    #fonction render_counters permettant d'afficher les compteurs
+    def render_counters(self):
+        coords = [self.unit,self.unit]
+        for i in range(3):
+            screen.blit(self.hearts[str(self.hp)][i],coords)
+            coords[0] += self.unit+screen.get_width()/16
+
+        coords = [self.unit,self.unit*2+screen.get_width()/16]
+
+        screen.blit(self.normal_image,coords)
+        text = self.font.render(str(self.normal_trash), False, (0, 0, 0))
+        coords[0] = coords[0]*2+screen.get_width()/16
+        screen.blit(text, coords) 
+
+        coords = [self.unit,self.unit*3+screen.get_width()/16*2]
+        screen.blit(self.golden_image,coords)
+        text = self.font.render(str(self.golden_trash), False, (0, 0, 0))
+        coords[0] = coords[0]*2+screen.get_width()/16
+        screen.blit(text, coords)
+        
+
 #création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
 class Minigame_player:
     #initialisation
@@ -232,7 +273,17 @@ class Minigame:
         self.minigame_golden_trash_image = pygame.transform.scale(pygame.image.load("assets/golden_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.png"),(1000,600))
-        self.minigame_levels = [level_1_mini,level_2_mini,level_3_mini,level_4_mini,level_5_mini,level_6_mini,level_7_mini,level_8_mini,level_9_mini]
+        self.minigame_levels = [level_1_mini,
+                                level_2_mini,
+                                level_3_mini,
+                                level_4_mini,
+                                level_5_mini,
+                                level_6_mini,
+                                level_7_mini,
+                                level_8_mini,
+                                level_9_mini,
+                                level_10_mini,
+                                level_11_mini]
         self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
@@ -276,11 +327,12 @@ class Minigame:
     
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
-        self.minigame_levels[actual_level] = self.minigame_levels_copy[actual_level]
+        self.minigame_levels = copy.deepcopy(self.minigame_levels_copy)
         self.mini_player.player_position = {'y' :14, 'x':1}
         self.counters.normal_count-=self.counters.temp_counts['n']
         self.counters.golden_count-=self.counters.temp_counts['g']
         self.counters.temp_counts = {'n':0,'g':0}
+
 
     #fonction move permettant de bouger le joueur dans le minijeu
     def move(self,keys,actual_level):
@@ -349,6 +401,11 @@ class World_data:
         self.resistance = 0
         self.collision = False
         self.minigame = Minigame()
+        self.counters = Counters(self.minigame.counters.normal_count,
+                                 self.minigame.counters.normal_image,
+                                 self.minigame.counters.golden_count,
+                                 self.minigame.counters.golden_image,
+                                 self.player.hp,self.minigame.counters.font)
 
     #fonction "change_level" permettant de passer d'un niveau à un autre
     def change_level(self):
@@ -366,6 +423,7 @@ class World_data:
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
         self.blocs.display(self.background.dim,self.player)
+        self.counters.render_counters()
     
     #fonction spike_collision 
     def spike_collision(self):
