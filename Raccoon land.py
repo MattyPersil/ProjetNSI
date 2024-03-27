@@ -21,7 +21,7 @@ class Player:
     def __init__(self):
         self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
-        self.hp = 3
+        self.hp = 1
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
@@ -186,7 +186,7 @@ class Blocks:
 #création de la classe "Counters" permettant d'afficher les informations tel que la vie du joueur et le nombre de poubelles collectés
 class Counters:
     #initialisation
-    def __init__(self,normal,normal_image,golden,golden_image,hp):
+    def __init__(self,normal,normal_image,golden,golden_image,hp,font):
         self.unit = screen.get_height()/32
         self.normal_trash = normal
         self.normal_image = normal_image
@@ -202,15 +202,27 @@ class Counters:
                        "4": [self.heart_full,self.heart_full,self.heart_empty],
                        "5": [self.heart_full,self.heart_full,self.heart_half],
                        "6": [self.heart_full,self.heart_full,self.heart_full]}
+        self.font = font
     #fonction render_counters permettant d'afficher les compteurs
     def render_counters(self):
+        coords = [self.unit,self.unit]
         for i in range(3):
-            screen.blit(self.hearts[self.hp][i],self)
+            screen.blit(self.hearts[str(self.hp)][i],coords)
+            coords[0] += self.unit+screen.get_width()/16
+
+        coords = [self.unit,self.unit*2+screen.get_width()/16]
+
+        screen.blit(self.normal_image,coords)
+        text = self.font.render(str(self.normal_trash), False, (0, 0, 0))
+        coords[0] = coords[0]*2+screen.get_width()/16
+        screen.blit(text, coords) 
+
+        coords = [self.unit,self.unit*3+screen.get_width()/16*2]
+        screen.blit(self.golden_image,coords)
+        text = self.font.render(str(self.golden_trash), False, (0, 0, 0))
+        coords[0] = coords[0]*2+screen.get_width()/16
+        screen.blit(text, coords)
         
-
-
-
-
 
 #création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
 class Minigame_player:
@@ -389,6 +401,11 @@ class World_data:
         self.resistance = 0
         self.collision = False
         self.minigame = Minigame()
+        self.counters = Counters(self.minigame.counters.normal_count,
+                                 self.minigame.counters.normal_image,
+                                 self.minigame.counters.golden_count,
+                                 self.minigame.counters.golden_image,
+                                 self.player.hp,self.minigame.counters.font)
 
     #fonction "change_level" permettant de passer d'un niveau à un autre
     def change_level(self):
@@ -406,6 +423,7 @@ class World_data:
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
         self.blocs.display(self.background.dim,self.player)
+        self.counters.render_counters()
     
     #fonction spike_collision 
     def spike_collision(self):
