@@ -183,6 +183,35 @@ class Blocks:
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
+#création de la classe "Counters" permettant d'afficher les informations tel que la vie du joueur et le nombre de poubelles collectés
+class Counters:
+    #initialisation
+    def __init__(self,normal,normal_image,golden,golden_image,hp):
+        self.unit = screen.get_height()/32
+        self.normal_trash = normal
+        self.normal_image = normal_image
+        self.golden_trash = golden
+        self.golden_image = golden_image
+        self.hp = hp
+        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.hearts = {"1": [self.heart_half,self.heart_empty,self.heart_empty],
+                       "2": [self.heart_full,self.heart_empty,self.heart_empty],
+                       "3": [self.heart_full,self.heart_half,self.heart_empty],
+                       "4": [self.heart_full,self.heart_full,self.heart_empty],
+                       "5": [self.heart_full,self.heart_full,self.heart_half],
+                       "6": [self.heart_full,self.heart_full,self.heart_full]}
+    #fonction render_counters permettant d'afficher les compteurs
+    def render_counters(self):
+        for i in range(3):
+            screen.blit(self.hearts[self.hp][i],self)
+        
+
+
+
+
+
 #création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
 class Minigame_player:
     #initialisation
