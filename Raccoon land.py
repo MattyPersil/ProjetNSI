@@ -67,8 +67,8 @@ class Background:
     #initialisation
     def __init__(self):
         self.dim = 0
-        self.sky0 = pygame.transform.scale(pygame.image.load("assets/sky0.png"),(1000,600))
-        self.sky1 = pygame.transform.scale(pygame.image.load("assets/fond monde 2.png"),(1000,600))
+        self.sky0 = pygame.transform.scale(pygame.image.load("assets/background world 1.png"),(1000,600))
+        self.sky1 = pygame.transform.scale(pygame.image.load("assets/background world 2.png"),(1000,600))
         self.actual=self.sky0
 
     #fonction "switch" permettant d'alterner entre les dimensions
