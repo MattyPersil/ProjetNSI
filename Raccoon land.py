@@ -84,6 +84,7 @@ class Background:
 
 #création de la classe "Blocks" contenant les informations sur tout les blocks
 class Blocks:
+    import random
     #initialsation
     def __init__(self):
         self.image_size = ((screen.get_width()/27)+1,(screen.get_height()/16)+1)
