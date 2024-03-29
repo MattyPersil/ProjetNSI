@@ -194,9 +194,9 @@ class Counters:
         self.golden_trash = golden
         self.golden_image = golden_image
         self.hp = hp
-        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/16,screen.get_width()/16))
-        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/16,screen.get_width()/16))
-        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/24,screen.get_width()/24))
+        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/24,screen.get_width()/24))
+        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/24,screen.get_width()/24))
         self.hearts = {"1": [self.heart_half,self.heart_empty,self.heart_empty],
                        "2": [self.heart_full,self.heart_empty,self.heart_empty],
                        "3": [self.heart_full,self.heart_half,self.heart_empty],
