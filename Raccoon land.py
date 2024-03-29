@@ -119,7 +119,8 @@ class Blocks:
                        (level_7_world_1,level_7_world_2),
                        (level_8_world_1,level_8_world_2),
                        (level_9_world_1,level_9_world_2),
-                       (level_10_world_1,level_10_world_2)]
+                       (level_10_world_1,level_10_world_2),
+                       (level_11_world_1,level_11_world_2)]
         self.current_level = 0
     #fonction "randomizer" permettant de changer aléatoirement les blocs de terre dans le deuxieme monde
     def randomizer(self):
@@ -455,7 +456,8 @@ class World_data:
     
     #fonction spike_collision 
     def spike_collision(self):
-        self.player.hp -= 1
+        if self.player.hp>1:
+            self.player.hp -= 1
         self.player.teleport()
         if self.background.dim == 1:
             self.background.switch(self.player)
