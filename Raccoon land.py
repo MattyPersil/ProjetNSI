@@ -4,6 +4,7 @@ import time
 from liste_des_levels import *
 from liste_des_minijeux import *
 import copy
+from random import randint as rnd
 #initialisation de pygame 
 pygame.init
 pygame.font.init()
@@ -84,7 +85,6 @@ class Background:
 
 #création de la classe "Blocks" contenant les informations sur tout les blocks
 class Blocks:
-    import random
     #initialsation
     def __init__(self):
         self.image_size = ((screen.get_width()/27)+1,(screen.get_height()/16)+1)
@@ -99,12 +99,13 @@ class Blocks:
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
 
         self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
+        self.helldirt2 = pygame.transform.scale(pygame.image.load("assets/helldirt 2.png"),self.image_size)
         self.hellstone = pygame.transform.scale(pygame.image.load("assets/hellstone.png"),self.image_size)
         self.hellspike = pygame.transform.scale(pygame.image.load("assets/hellspike.png"),self.image_size)
         self.helltrashcan = pygame.transform.scale(pygame.image.load("assets/helltrashcan.png"),self.image_size)
         self.hellgrassblock = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
         self.hellflower = pygame.transform.scale(pygame.image.load("assets/hellflowers.png"),self.image_size)
-
+        self.hellgrassblock2 = pygame.transform.scale(pygame.image.load("assets/hellgrass 2.png"),self.image_size)
         self.rects = []
         self.spikerect = [] 
         self.specialrect = None
@@ -120,6 +121,15 @@ class Blocks:
                        (level_9_world_1,level_9_world_2),
                        (level_10_world_1,level_10_world_2)]
         self.current_level = 0
+    #fonction "randomizer" permettant de changer aléatoirement les blocs de terre dans le deuxieme monde
+    def randomizer(self):
+        for i in range(len(self.levels)):
+            for ligne in range(len(self.levels[i][1])):
+                for bloc in range(len(self.levels[i][1][ligne])):
+                    if self.levels[i][1][ligne][bloc] == 1 and rnd(1,4)==4:
+                        self.levels[i][1][ligne][bloc] = 7
+                    if self.levels[i][1][ligne][bloc] == 2 and rnd(1,3) == 3:
+                        self.levels[i][1][ligne][bloc] = 8
 
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
@@ -132,18 +142,24 @@ class Blocks:
         for i in w:
             x=1
             for n in i:
-                if n == 1:
-                    if dim == 0:
+                if n == 1 or n == 7:        
+                    if dim ==0:
                         screen.blit(self.dirt ,(x,y))
                     else:
-                        screen.blit(self.helldirt ,(x,y))
-
+                        if n==7:
+                            screen.blit(self.helldirt,(x,y))
+                        else:
+                            screen.blit(self.helldirt2,(x,y))
                     self.rects.append(self.dirt.get_rect(topleft=(x,y)))
-                if n == 2:
+    
+                if n == 2 or n == 8:
                     if dim == 0:
                         screen.blit(self.grassblock ,(x,y))
                     else:
-                        screen.blit(self.hellgrassblock ,(x,y))
+                        if n ==2:
+                            screen.blit(self.hellgrassblock2 ,(x,y))
+                        else:
+                            screen.blit(self.hellgrassblock, (x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 3:
                     
@@ -493,7 +509,7 @@ class World_data:
         self.minigame.render(self.blocs.image_size,self.blocs.current_level)
 
 world = World_data()
-
+world.blocs.randomizer()
 #lancement du jeu 
 while running == True:
     # code permettant de fermer le jeu quand la fenetre est fermée
