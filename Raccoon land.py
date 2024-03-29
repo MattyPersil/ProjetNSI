@@ -22,7 +22,7 @@ class Player:
     def __init__(self):
         self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
-        self.hp = 1
+        self.hp = 6
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
@@ -227,14 +227,15 @@ class Counters:
             screen.blit(self.hearts[str(self.hp)][i],coords)
             coords[0] += self.unit+screen.get_width()/32
 
-        coords = [self.unit,self.unit*2+screen.get_width()/16]
+        coords = [self.unit,self.unit*2+screen.get_width()/32]
 
         screen.blit(self.normal_image,coords)
         text = self.font.render(str(self.normal_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
         screen.blit(text, coords) 
 
-        coords = [self.unit,self.unit*3+screen.get_width()/16*2]
+        coords = [self.unit,self.unit*3+screen.get_width()/32*1.5]
+        coords = [self.unit,self.unit*3+screen.get_width()/32*1.5]
         screen.blit(self.golden_image,coords)
         text = self.font.render(str(self.golden_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
