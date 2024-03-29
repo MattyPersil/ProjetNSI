@@ -240,7 +240,11 @@ class Counters:
         text = self.font.render(str(self.golden_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
         screen.blit(text, coords)
-        
+    #fonction refresh permettant d'actualiser les compteurs 
+    def refresh(self,normal,gold,hp):
+        self.normal_trash = normal
+        self.golden_trash = gold
+        self.hp = hp
 
 #création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
 class Minigame_player:
@@ -443,6 +447,7 @@ class World_data:
 
     #fonction "display" permettant d'afficher les elements du jeu
     def display(self):
+        self.counters.refresh(self.minigame.counters.normal_count,self.minigame.counters.golden_count,self.player.hp)
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
         self.blocs.display(self.background.dim,self.player)
