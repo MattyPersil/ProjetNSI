@@ -579,3 +579,6 @@ while running == True:
 
     
 """
+class entity:
+    #lieu de définition de toute les entités extérieur du joueur.
+    pass
