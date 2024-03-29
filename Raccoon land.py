@@ -225,7 +225,7 @@ class Counters:
         coords = [self.unit,self.unit]
         for i in range(3):
             screen.blit(self.hearts[str(self.hp)][i],coords)
-            coords[0] += self.unit+screen.get_width()/16
+            coords[0] += self.unit+screen.get_width()/32
 
         coords = [self.unit,self.unit*2+screen.get_width()/16]
 
