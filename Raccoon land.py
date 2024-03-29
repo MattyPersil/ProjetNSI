@@ -4,6 +4,7 @@ import time
 from liste_des_levels import *
 from liste_des_minijeux import *
 import copy
+from random import randint as rnd
 #initialisation de pygame 
 pygame.init
 pygame.font.init()
@@ -21,7 +22,7 @@ class Player:
     def __init__(self):
         self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
-        self.hp = 1
+        self.hp = 6
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
@@ -84,7 +85,6 @@ class Background:
 
 #création de la classe "Blocks" contenant les informations sur tout les blocks
 class Blocks:
-    import random
     #initialsation
     def __init__(self):
         self.image_size = ((screen.get_width()/27)+1,(screen.get_height()/16)+1)
@@ -99,12 +99,13 @@ class Blocks:
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
 
         self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
+        self.helldirt2 = pygame.transform.scale(pygame.image.load("assets/helldirt 2.png"),self.image_size)
         self.hellstone = pygame.transform.scale(pygame.image.load("assets/hellstone.png"),self.image_size)
         self.hellspike = pygame.transform.scale(pygame.image.load("assets/hellspike.png"),self.image_size)
         self.helltrashcan = pygame.transform.scale(pygame.image.load("assets/helltrashcan.png"),self.image_size)
         self.hellgrassblock = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
         self.hellflower = pygame.transform.scale(pygame.image.load("assets/hellflowers.png"),self.image_size)
-
+        self.hellgrassblock2 = pygame.transform.scale(pygame.image.load("assets/hellgrass 2.png"),self.image_size)
         self.rects = []
         self.spikerect = [] 
         self.specialrect = None
@@ -120,6 +121,15 @@ class Blocks:
                        (level_9_world_1,level_9_world_2),
                        (level_10_world_1,level_10_world_2)]
         self.current_level = 0
+    #fonction "randomizer" permettant de changer aléatoirement les blocs de terre dans le deuxieme monde
+    def randomizer(self):
+        for i in range(len(self.levels)):
+            for ligne in range(len(self.levels[i][1])):
+                for bloc in range(len(self.levels[i][1][ligne])):
+                    if self.levels[i][1][ligne][bloc] == 1 and rnd(1,4)==4:
+                        self.levels[i][1][ligne][bloc] = 7
+                    if self.levels[i][1][ligne][bloc] == 2 and rnd(1,3) == 3:
+                        self.levels[i][1][ligne][bloc] = 8
 
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
@@ -132,18 +142,24 @@ class Blocks:
         for i in w:
             x=1
             for n in i:
-                if n == 1:
-                    if dim == 0:
+                if n == 1 or n == 7:        
+                    if dim ==0:
                         screen.blit(self.dirt ,(x,y))
                     else:
-                        screen.blit(self.helldirt ,(x,y))
-
+                        if n==7:
+                            screen.blit(self.helldirt,(x,y))
+                        else:
+                            screen.blit(self.helldirt2,(x,y))
                     self.rects.append(self.dirt.get_rect(topleft=(x,y)))
-                if n == 2:
+    
+                if n == 2 or n == 8:
                     if dim == 0:
                         screen.blit(self.grassblock ,(x,y))
                     else:
-                        screen.blit(self.hellgrassblock ,(x,y))
+                        if n ==2:
+                            screen.blit(self.hellgrassblock2 ,(x,y))
+                        else:
+                            screen.blit(self.hellgrassblock, (x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 3:
                     
@@ -194,9 +210,9 @@ class Counters:
         self.golden_trash = golden
         self.golden_image = golden_image
         self.hp = hp
-        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/16,screen.get_width()/16))
-        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/16,screen.get_width()/16))
-        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/24,screen.get_width()/24))
+        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/24,screen.get_width()/24))
+        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/24,screen.get_width()/24))
         self.hearts = {"1": [self.heart_half,self.heart_empty,self.heart_empty],
                        "2": [self.heart_full,self.heart_empty,self.heart_empty],
                        "3": [self.heart_full,self.heart_half,self.heart_empty],
@@ -209,21 +225,26 @@ class Counters:
         coords = [self.unit,self.unit]
         for i in range(3):
             screen.blit(self.hearts[str(self.hp)][i],coords)
-            coords[0] += self.unit+screen.get_width()/16
+            coords[0] += self.unit+screen.get_width()/32
 
-        coords = [self.unit,self.unit*2+screen.get_width()/16]
+        coords = [self.unit,self.unit*2+screen.get_width()/32]
 
         screen.blit(self.normal_image,coords)
         text = self.font.render(str(self.normal_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
         screen.blit(text, coords) 
 
-        coords = [self.unit,self.unit*3+screen.get_width()/16*2]
+        coords = [self.unit,self.unit*3+screen.get_width()/32*1.5]
+        coords = [self.unit,self.unit*3+screen.get_width()/32*1.5]
         screen.blit(self.golden_image,coords)
         text = self.font.render(str(self.golden_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
         screen.blit(text, coords)
-        
+    #fonction refresh permettant d'actualiser les compteurs 
+    def refresh(self,normal,gold,hp):
+        self.normal_trash = normal
+        self.golden_trash = gold
+        self.hp = hp
 
 #création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
 class Minigame_player:
@@ -426,6 +447,7 @@ class World_data:
 
     #fonction "display" permettant d'afficher les elements du jeu
     def display(self):
+        self.counters.refresh(self.minigame.counters.normal_count,self.minigame.counters.golden_count,self.player.hp)
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
         self.blocs.display(self.background.dim,self.player)
@@ -493,7 +515,7 @@ class World_data:
         self.minigame.render(self.blocs.image_size,self.blocs.current_level)
 
 world = World_data()
-
+world.blocs.randomizer()
 #lancement du jeu 
 while running == True:
     # code permettant de fermer le jeu quand la fenetre est fermée
