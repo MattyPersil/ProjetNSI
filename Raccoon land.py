@@ -270,6 +270,7 @@ class Minigame_counters:
         self.temp_counts ={'n':0,'g':0}
         self.font = pygame.font.SysFont('Comic Sans MS', 30)
 
+
     #fonction render_counters permettant d'afficher les compteurs
     def render_counters(self):
         screen.blit(self.normal_image,self.normal_coords)
@@ -440,7 +441,7 @@ class World_data:
                                  self.minigame.counters.golden_count,
                                  self.minigame.counters.golden_image,
                                  self.player.hp,self.minigame.counters.font)
-
+        
     #fonction "change_level" permettant de passer d'un niveau à un autre
     def change_level(self):
         self.blocs.current_level += 1
@@ -583,8 +584,13 @@ while running == True:
 """
 # à ajouter 
 
+    
+"""
+"""
 class entity:
     #lieu de définition de toute les entités extérieur du joueur.
-    pass
-    
+    def tortuto(x=0,y=0):
+        self.tortuto_right = pygame.transform.scale(pygame.image.load("assets/tortuto right.png"),self.image_size)
+        self.tortuto_left = pygame.transform.scale(pygame.image.load("assets/tortuto left.png"),self.image_size)
+
 """
