@@ -307,7 +307,8 @@ class Minigame:
                                 level_8_mini,
                                 level_9_mini,
                                 level_10_mini,
-                                level_11_mini]
+                                level_11_mini,
+                                level_12_mini]
         self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
