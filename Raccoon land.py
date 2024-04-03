@@ -315,6 +315,7 @@ class Minigame:
     
     #fonction render permettant d'afficher le minijeu
     def render(self,image_size,actual_level):
+        trash = {'normal':0,'gold':0}
         screen.blit(self.minigame_background,(0,0))
         y = 0
         for i in self.minigame_levels[actual_level]:
@@ -340,9 +341,11 @@ class Minigame:
                 if j == 6:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_trash_image,(x,y))
+                    trash['normal']+=1
                 if j == 7:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_golden_trash_image,(x,y))
+                    trash['gold']+=1
                 if j == 8:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_deadly_trash_image,(x,y))
@@ -351,6 +354,8 @@ class Minigame:
         self.counters.render_counters()
         self.mini_player.render(image_size)
         self.mini_player_2.render(image_size)
+        if trash['normal']==0 and trash['gold'] == 0:
+            self.minigame_is_activated = False
     
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
@@ -581,9 +586,11 @@ while running == True:
 
     
 """
-
+"""
 class entity:
     #lieu de définition de toute les entités extérieur du joueur.
     def tortuto(x=0,y=0):
         self.tortuto_right = pygame.transform.scale(pygame.image.load("assets/tortuto right.png"),self.image_size)
         self.tortuto_left = pygame.transform.scale(pygame.image.load("assets/tortuto left.png"),self.image_size)
+
+"""

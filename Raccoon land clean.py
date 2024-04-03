@@ -4,6 +4,7 @@ import time
 from liste_des_levels import *
 from liste_des_minijeux import *
 import copy
+from random import randint as rnd
 #initialisation de pygame 
 pygame.init
 pygame.font.init()
@@ -21,7 +22,7 @@ class Player:
     def __init__(self):
         self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
-        self.hp = 1
+        self.hp = 6
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
@@ -67,8 +68,8 @@ class Background:
     #initialisation
     def __init__(self):
         self.dim = 0
-        self.sky0 = pygame.transform.scale(pygame.image.load("assets/sky0.png"),(1000,600))
-        self.sky1 = pygame.transform.scale(pygame.image.load("assets/fond monde 2.png"),(1000,600))
+        self.sky0 = pygame.transform.scale(pygame.image.load("assets/background world 1.png"),(1000,600))
+        self.sky1 = pygame.transform.scale(pygame.image.load("assets/background world 2.png"),(1000,600))
         self.actual=self.sky0
 
     #fonction "switch" permettant d'alterner entre les dimensions
@@ -98,12 +99,13 @@ class Blocks:
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
 
         self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
+        self.helldirt2 = pygame.transform.scale(pygame.image.load("assets/helldirt 2.png"),self.image_size)
         self.hellstone = pygame.transform.scale(pygame.image.load("assets/hellstone.png"),self.image_size)
         self.hellspike = pygame.transform.scale(pygame.image.load("assets/hellspike.png"),self.image_size)
         self.helltrashcan = pygame.transform.scale(pygame.image.load("assets/helltrashcan.png"),self.image_size)
         self.hellgrassblock = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
         self.hellflower = pygame.transform.scale(pygame.image.load("assets/hellflowers.png"),self.image_size)
-
+        self.hellgrassblock2 = pygame.transform.scale(pygame.image.load("assets/hellgrass 2.png"),self.image_size)
         self.rects = []
         self.spikerect = [] 
         self.specialrect = None
@@ -117,8 +119,18 @@ class Blocks:
                        (level_7_world_1,level_7_world_2),
                        (level_8_world_1,level_8_world_2),
                        (level_9_world_1,level_9_world_2),
-                       (level_10_world_1,level_10_world_2)]
+                       (level_10_world_1,level_10_world_2),
+                       (level_11_world_1,level_11_world_2)]
         self.current_level = 0
+    #fonction "randomizer" permettant de changer aléatoirement les blocs de terre dans le deuxieme monde
+    def randomizer(self):
+        for i in range(len(self.levels)):
+            for ligne in range(len(self.levels[i][1])):
+                for bloc in range(len(self.levels[i][1][ligne])):
+                    if self.levels[i][1][ligne][bloc] == 1 and rnd(1,4)==4:
+                        self.levels[i][1][ligne][bloc] = 7
+                    if self.levels[i][1][ligne][bloc] == 2 and rnd(1,3) == 3:
+                        self.levels[i][1][ligne][bloc] = 8
 
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
@@ -131,18 +143,24 @@ class Blocks:
         for i in w:
             x=1
             for n in i:
-                if n == 1:
-                    if dim == 0:
+                if n == 1 or n == 7:        
+                    if dim ==0:
                         screen.blit(self.dirt ,(x,y))
                     else:
-                        screen.blit(self.helldirt ,(x,y))
-
+                        if n==7:
+                            screen.blit(self.helldirt,(x,y))
+                        else:
+                            screen.blit(self.helldirt2,(x,y))
                     self.rects.append(self.dirt.get_rect(topleft=(x,y)))
-                if n == 2:
+    
+                if n == 2 or n == 8:
                     if dim == 0:
                         screen.blit(self.grassblock ,(x,y))
                     else:
-                        screen.blit(self.hellgrassblock ,(x,y))
+                        if n ==2:
+                            screen.blit(self.hellgrassblock2 ,(x,y))
+                        else:
+                            screen.blit(self.hellgrassblock, (x,y))
                     self.rects.append(self.grassblock.get_rect(topleft=(x,y)))
                 if n == 3:
                     
@@ -193,9 +211,9 @@ class Counters:
         self.golden_trash = golden
         self.golden_image = golden_image
         self.hp = hp
-        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/16,screen.get_width()/16))
-        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/16,screen.get_width()/16))
-        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/16,screen.get_width()/16))
+        self.heart_full = pygame.transform.scale(pygame.image.load("assets/coeur plein.png"),(screen.get_width()/24,screen.get_width()/24))
+        self.heart_half = pygame.transform.scale(pygame.image.load("assets/demi-coeur.png"),(screen.get_width()/24,screen.get_width()/24))
+        self.heart_empty = pygame.transform.scale(pygame.image.load("assets/coeur vide.png"),(screen.get_width()/24,screen.get_width()/24))
         self.hearts = {"1": [self.heart_half,self.heart_empty,self.heart_empty],
                        "2": [self.heart_full,self.heart_empty,self.heart_empty],
                        "3": [self.heart_full,self.heart_half,self.heart_empty],
@@ -208,21 +226,26 @@ class Counters:
         coords = [self.unit,self.unit]
         for i in range(3):
             screen.blit(self.hearts[str(self.hp)][i],coords)
-            coords[0] += self.unit+screen.get_width()/16
+            coords[0] += self.unit+screen.get_width()/32
 
-        coords = [self.unit,self.unit*2+screen.get_width()/16]
+        coords = [self.unit,self.unit*2+screen.get_width()/32]
 
         screen.blit(self.normal_image,coords)
         text = self.font.render(str(self.normal_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
         screen.blit(text, coords) 
 
-        coords = [self.unit,self.unit*3+screen.get_width()/16*2]
+        coords = [self.unit,self.unit*3+screen.get_width()/32*1.5]
+        coords = [self.unit,self.unit*3+screen.get_width()/32*1.5]
         screen.blit(self.golden_image,coords)
         text = self.font.render(str(self.golden_trash), False, (0, 0, 0))
         coords[0] = coords[0]*2+screen.get_width()/16
         screen.blit(text, coords)
-        
+    #fonction refresh permettant d'actualiser les compteurs 
+    def refresh(self,normal,gold,hp):
+        self.normal_trash = normal
+        self.golden_trash = gold
+        self.hp = hp
 
 #création de la classe "Minigame Player" permettant de stocker les informations relatives au personnage du minijeu
 class Minigame_player:
@@ -262,6 +285,7 @@ class Minigame:
     #initialisation
     def __init__(self):
         self.mini_player = Minigame_player()
+        self.mini_player_2 = Minigame_player()
         self.minigame_is_activated = False
         self.moving_wall_activation = True
         self.minigame_ground_image = pygame.transform.scale(pygame.image.load("assets/ground_minigame.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
@@ -283,7 +307,8 @@ class Minigame:
                                 level_8_mini,
                                 level_9_mini,
                                 level_10_mini,
-                                level_11_mini]
+                                level_11_mini,
+                                level_12_mini]
         self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
     
@@ -324,6 +349,7 @@ class Minigame:
             y+=image_size[1]-1
         self.counters.render_counters()
         self.mini_player.render(image_size)
+        self.mini_player_2.render(image_size)
     
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
@@ -341,50 +367,53 @@ class Minigame:
         if keys[pygame.K_r]:
             self.level_reset(actual_level)
 
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            right_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']+1]
-            if right_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['x'] += 1
-            if right_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['x'] += 1
+        players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
 
+        for p,k in players.items():
+            if keys[k[0]]:
+                right_block = level[p.player_position['y']][p.player_position['x']+1]
+                if right_block in [0,6,3,2,10,7]:
+                    p.player_position['x'] += 1
+                if right_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['x'] += 1
+
+                    
+            if keys[k[1]] :
+                left_block = level[p.player_position['y']][p.player_position['x']-1]
+                if left_block in [0,6,3,2,10,7]:
+                    p.player_position['x'] -= 1
+                if left_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['x'] -= 1
                 
-        if keys[pygame.K_LEFT] or keys[pygame.K_q]:
-            left_block = level[self.mini_player.player_position['y']][self.mini_player.player_position['x']-1]
-            if left_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['x'] -= 1
-            if left_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['x'] -= 1
-            
-        if keys[pygame.K_UP] or keys[pygame.K_z]:
-            upper_block = level[self.mini_player.player_position['y']-1][self.mini_player.player_position['x']]
-            if upper_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['y'] -= 1
-            if upper_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['y'] -= 1
+            if keys[k[2]]:
+                upper_block = level[p.player_position['y']-1][p.player_position['x']]
+                if upper_block in [0,6,3,2,10,7]:
+                    p.player_position['y'] -= 1
+                if upper_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['y'] -= 1
 
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            lower_block = level[self.mini_player.player_position['y']+1][self.mini_player.player_position['x']]
-            if lower_block in [0,6,3,2,10,7]:
-                self.mini_player.player_position['y'] += 1
-            if lower_block == 4 and self.moving_wall_activation == False:
-                self.mini_player.player_position['y'] += 1
+            if keys[k[3]]:
+                lower_block = level[p.player_position['y']+1][p.player_position['x']]
+                if lower_block in [0,6,3,2,10,7]:
+                    p.player_position['y'] += 1
+                if lower_block == 4 and self.moving_wall_activation == False:
+                    p.player_position['y'] += 1
 
-        time.sleep(0.1)
-        actual_block = self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']]
-        if actual_block == 6:
-            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
-            self.counters.normal_count+=1
-            self.counters.temp_counts['n'] +=1
-        if actual_block == 7:
-            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =0
-            self.counters.golden_count+=1
-            self.counters.temp_counts['g'] +=1
-        if actual_block == 3:
-            self.moving_wall_activation = False
-        if actual_block == 2 or actual_block == 10:
-            self.minigame_levels[actual_level][self.mini_player.player_position['y']][self.mini_player.player_position['x']] =10
-            self.moving_wall_activation = True
+            time.sleep(0.1)
+            actual_block = self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']]
+            if actual_block == 6:
+                self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =0
+                self.counters.normal_count+=1
+                self.counters.temp_counts['n'] +=1
+            if actual_block == 7:
+                self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =0
+                self.counters.golden_count+=1
+                self.counters.temp_counts['g'] +=1
+            if actual_block == 3:
+                self.moving_wall_activation = False
+            if actual_block == 2 or actual_block == 10:
+                self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =10
+                self.moving_wall_activation = True
 
 
 
@@ -420,6 +449,7 @@ class World_data:
 
     #fonction "display" permettant d'afficher les elements du jeu
     def display(self):
+        self.counters.refresh(self.minigame.counters.normal_count,self.minigame.counters.golden_count,self.player.hp)
         screen.blit(self.background.actual,(0,0))
         screen.blit(self.player.current_image,self.player.player_position)
         self.blocs.display(self.background.dim,self.player)
@@ -427,7 +457,8 @@ class World_data:
     
     #fonction spike_collision 
     def spike_collision(self):
-        self.player.hp -= 1
+        if self.player.hp>1:
+            self.player.hp -= 1
         self.player.teleport()
         if self.background.dim == 1:
             self.background.switch(self.player)
@@ -487,7 +518,7 @@ class World_data:
         self.minigame.render(self.blocs.image_size,self.blocs.current_level)
 
 world = World_data()
-
+world.blocs.randomizer()
 #lancement du jeu 
 while running == True:
     # code permettant de fermer le jeu quand la fenetre est fermée
