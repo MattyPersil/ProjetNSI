@@ -285,7 +285,7 @@ class Minigame:
     #initialisation
     def __init__(self):
         self.mini_player = Minigame_player()
-        self.mini_player_2 = Minigame_player()
+        #self.mini_player_2 = Minigame_player()
         self.minigame_is_activated = False
         self.moving_wall_activation = True
         self.minigame_ground_image = pygame.transform.scale(pygame.image.load("assets/ground_minigame.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
@@ -352,7 +352,7 @@ class Minigame:
             y+=image_size[1]-1
         self.counters.render_counters()
         self.mini_player.render(image_size)
-        self.mini_player_2.render(image_size)
+        #self.mini_player_2.render(image_size)
         if trash['normal']==0 and trash['gold'] == 0:
             self.minigame_is_activated = False
     
@@ -372,8 +372,8 @@ class Minigame:
         if keys[pygame.K_r]:
             self.level_reset(actual_level)
 
-        players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
-
+        #players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
+        players = {self.mini_player:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
         for p,k in players.items():
             if keys[k[0]]:
                 right_block = level[p.player_position['y']][p.player_position['x']+1]
