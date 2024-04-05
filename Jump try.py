@@ -14,34 +14,46 @@ image = pygame.transform.scale(pygame.image.load("assets/pizza.png"), (x,y))
 ground =pygame.transform.scale(pygame.image.load("assets/ground.jpg"), (1000,600))
 bg = pygame.transform.scale(pygame.image.load("assets/sky0.png"), (1000,600))
 image_coords = [0,0]
+image_rect = image.get_rect(topleft = image_coords)
 
-is_jumping = False
+#is_jumping = False
 is_falling = True
+ground_rect = ground.get_rect(topleft = (0,y*15))
 
 movey = 0
-
-def gravity():
-    global is_falling,movey
-    if is_falling == True:
-        movey += 1
-
-ground_rect = ground.get_rect(topleft = (0,y*10))
-
-def jump():
-    global is_jumping,is_falling,movey
-    if is_jumping is False:
-        is_falling = False
-        is_jumping = True
-        movey -= 33
-
+collision_cd = 0
 
 def collisions():
-    global ground_rect,image_rect,movey,is_falling
-    if ground_rect.colliderect(image_rect):
-        is_falling = False
+    global ground_rect,image_rect,collision_cd
+    if collision_cd >0:
+        collision_cd-=1
+    else:
+        if ground_rect.colliderect(image_rect):
+            return True
+        else:
+            return False
+
+def stick():
+    pass
+    """global ground_rect,image_rect
+    while collisions()==True:
+        image_rect.move(image_rect.x,image_rect.y-5)"""
+
+def gravity():
+    global image_rect, is_falling, movey
+    if is_falling == True:
+        movey += 1
+    if collisions() == True:
         movey = 0
-        """image_rect = image_rect.move(image_rect.x,ground_rect.top)"""
-        image_rect.update((image_rect.x, ground_rect.y-image_rect.y))
+        stick()
+        is_falling = False
+
+def jump():
+    global movey,is_falling,collision_cd
+    if is_falling == False:
+        is_falling = True
+        movey = -20
+        collision_cd = 5
 
 while running == True:
     for event in pygame.event.get():
@@ -60,39 +72,13 @@ while running == True:
         image_coords[0] += 300*dt
     if keys[pygame.K_q] or keys[pygame.K_LEFT]:
         image_coords[0] -= 300*dt
+
     if keys[pygame.K_SPACE]:
        jump()
 
     gravity()
-    collisions()
 
     image_coords[1] += movey
-
-    """
-    if is_jumping and is_falling is False:
-        is_falling = True
-        movey -= 33  # how high to jump
-    
-    if image_rect.colliderect(ground_rect):
-        ground_hit_list = [ground_rect]
-    else :
-        ground_hit_list = []
-
-    for g in ground_hit_list:
-        movey = 0
-        image_rect.bottom = g.top
-        is_jumping = False  # stop jumping
-    """
-    """
-    for p in plat_hit_list:
-        is_jumping = False
-        movey = 0
-
-        if image_rect.bottom <= p.top:
-            image.rect.bottom = p.top
-        else:
-            movey += 3.2"""
-
 
     pygame.display.flip()
     dt = clock.tick(60) / 1000
