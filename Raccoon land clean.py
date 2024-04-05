@@ -270,6 +270,7 @@ class Minigame_counters:
         self.temp_counts ={'n':0,'g':0}
         self.font = pygame.font.SysFont('Comic Sans MS', 30)
 
+
     #fonction render_counters permettant d'afficher les compteurs
     def render_counters(self):
         screen.blit(self.normal_image,self.normal_coords)
@@ -285,7 +286,7 @@ class Minigame:
     #initialisation
     def __init__(self):
         self.mini_player = Minigame_player()
-        self.mini_player_2 = Minigame_player()
+        #self.mini_player_2 = Minigame_player()
         self.minigame_is_activated = False
         self.moving_wall_activation = True
         self.minigame_ground_image = pygame.transform.scale(pygame.image.load("assets/ground_minigame.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
@@ -314,6 +315,7 @@ class Minigame:
     
     #fonction render permettant d'afficher le minijeu
     def render(self,image_size,actual_level):
+        trash = {'normal':0,'gold':0}
         screen.blit(self.minigame_background,(0,0))
         y = 0
         for i in self.minigame_levels[actual_level]:
@@ -339,9 +341,11 @@ class Minigame:
                 if j == 6:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_trash_image,(x,y))
+                    trash['normal']+=1
                 if j == 7:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_golden_trash_image,(x,y))
+                    trash['gold']+=1
                 if j == 8:
                     screen.blit(self.minigame_ground_image,(x,y))
                     screen.blit(self.minigame_deadly_trash_image,(x,y))
@@ -349,7 +353,9 @@ class Minigame:
             y+=image_size[1]-1
         self.counters.render_counters()
         self.mini_player.render(image_size)
-        self.mini_player_2.render(image_size)
+        #self.mini_player_2.render(image_size)
+        if trash['normal']==0 and trash['gold'] == 0:
+            self.minigame_is_activated = False
     
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
@@ -367,8 +373,8 @@ class Minigame:
         if keys[pygame.K_r]:
             self.level_reset(actual_level)
 
-        players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
-
+        #players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
+        players = {self.mini_player:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
         for p,k in players.items():
             if keys[k[0]]:
                 right_block = level[p.player_position['y']][p.player_position['x']+1]
@@ -435,7 +441,7 @@ class World_data:
                                  self.minigame.counters.golden_count,
                                  self.minigame.counters.golden_image,
                                  self.player.hp,self.minigame.counters.font)
-
+        
     #fonction "change_level" permettant de passer d'un niveau à un autre
     def change_level(self):
         self.blocs.current_level += 1
@@ -579,4 +585,12 @@ while running == True:
 # à ajouter 
 
     
+"""
+"""
+class entity:
+    #lieu de définition de toute les entités extérieur du joueur.
+    def tortuto(x=0,y=0):
+        self.tortuto_right = pygame.transform.scale(pygame.image.load("assets/tortuto right.png"),self.image_size)
+        self.tortuto_left = pygame.transform.scale(pygame.image.load("assets/tortuto left.png"),self.image_size)
+
 """
