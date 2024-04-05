@@ -41,8 +41,8 @@ def collisions():
 
 def stick():
     global ground_rect,image_rect
-    while collisions()==True:
-        image_rect = image_rect.move(image_rect.x,image_rect.y-10)
+    if collisions()==True:
+        image_coords[1]-=1
 
 def gravity():
     global is_falling, movey
