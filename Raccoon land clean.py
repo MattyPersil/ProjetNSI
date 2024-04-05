@@ -540,6 +540,7 @@ while running == True:
     world.player.get_rekt()
     #appel de la fonction "collisions" détéctant les collisions
     world.collisions()
+    print(world.collision)
     
     #récupération des touches presséees
     keys = pygame.key.get_pressed()
