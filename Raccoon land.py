@@ -26,17 +26,21 @@ class Player:
         self.image_left = pygame.transform.scale_by(pygame.image.load("assets/Player_left.png"), 0.1)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
-        self.rect = self.image_right.get_rect(topleft=self.player_position)
         self.player_facing = 'right'
-        self.velocity = (0,0)
         self.move_left = True
         self.move_right = True
         self.allow_move = True
+        self.movey = 0
+        self.coords = [self.player_position.x,self.player_position.y]
+        self.rect = self.image_right.get_rect(topleft=self.coords)
+        self.is_falling = True
+        self.collision_cd = 0
+
 
 
     #fonction "get_rekt" permettant de mettre à jour le rect du joueur
     def get_rekt(self):
-        self.rect = self.image_right.get_rect(topleft=self.player_position)
+        self.rect = self.image_right.get_rect(topleft=self.coords)
 
     #fonction "move" permettant le déplacement du joueur ainsi que le changement de son orientation
     def move(self,direction):
@@ -46,22 +50,27 @@ class Player:
                     self.current_image=self.image_right
                     self.player_facing='right'
                 if self.move_right==True:
-                    self.player_position.x += 300 * dt
+                    self.coords[0] += 300 * dt
             elif direction =='left':
                 if self.player_facing=='right':
                     self.current_image=self.image_left
                     self.player_facing='left'
                 if self.move_left == True:
-                    self.player_position.x -= 300 * dt
+                    self.coords[0] -= 300 * dt
 
     #fonction teleport changeant la position du joueur sur l'écran
     def teleport(self, destination = None):
         if destination == None:
             self.position_default = pygame.Vector2(44, 400)
             destination = self.position_default
-        self.player_position = destination
-        self.velocity = (0,0)
+        self.coords = destination
 
+    #fonction jump permettant au personnage de sauter
+    def jump(self):
+        if self.is_falling == False:
+            self.is_falling = True
+            self.movey = -17
+            self.collision_cd = 5
 
 #création de la classe "Backgroud" permettant de stocker les informations relatives au fond du jeu
 class Background:
@@ -80,7 +89,6 @@ class Background:
         else:
             self.actual=self.sky0
             self.dim=0
-        player.velocity = (0,0)
 
 
 #création de la classe "Blocks" contenant les informations sur tout les blocks
@@ -297,7 +305,7 @@ class Minigame:
         self.minigame_golden_trash_image = pygame.transform.scale(pygame.image.load("assets/golden_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_deadly_trash_image = pygame.transform.scale(pygame.image.load("assets/deadly_trash.png"),((screen.get_width()/27)+1,(screen.get_height()/16)+1))
         self.minigame_background = pygame.transform.scale(pygame.image.load("assets/ground.png"),(1000,600))
-        self.minigame_levels = [level_1_mini,
+        self.minigame_levels = [level_13_mini,
                                 level_2_mini,
                                 level_3_mini,
                                 level_4_mini,
@@ -425,8 +433,6 @@ class World_data:
         self.player = Player()
         self.background = Background()
         self.blocs = Blocks()
-        self.gravite = 10
-        self.resistance = 0
         self.collision = False
         self.minigame = Minigame()
         self.counters = Counters(self.minigame.counters.normal_count,
@@ -442,15 +448,11 @@ class World_data:
         self.minigame.counters.temp_counts = {'n':0,'g':0}
         self.player.teleport()
 
-    #fonction "gravite_jeu" permettant de simuler la gravité du jeu
-    def gravite_jeu(self,joueur):
-        self.player.player_position.y += self.gravite+self.resistance
-
     #fonction "display" permettant d'afficher les elements du jeu
     def display(self):
         self.counters.refresh(self.minigame.counters.normal_count,self.minigame.counters.golden_count,self.player.hp)
         screen.blit(self.background.actual,(0,0))
-        screen.blit(self.player.current_image,self.player.player_position)
+        screen.blit(self.player.current_image,self.player.coords)
         self.blocs.display(self.background.dim,self.player)
         self.counters.render_counters()
 
@@ -469,6 +471,7 @@ class World_data:
         left_collision = False
         right_collision = False
         #top_collision = False
+        
         for bloc in self.blocs.rects:
             if bloc.colliderect(self.player.rect):
                 self.collision = True
@@ -505,11 +508,19 @@ class World_data:
         for spike in self.blocs.spikerect:
             if spike.colliderect(self.player.rect):
                 self.spike_collision()
-
+    
+        if world.player.collision_cd > 0:
+            world.player.collision_cd -= 1
+            self.collision = False
+    #fonction gravite permettant de simluler la gravite dans le jeu
+    def gravite(self):
+        self.collisions()
+        print(self.collision)
+        if self.player.is_falling == True:
+            self.player.movey += 1
         if self.collision == True:
-            self.resistance =  -10
-        else:
-            self.resistance = 0
+            self.player.movey = 0
+            self.player.is_falling = False
 
     #fonction minigame permettant d'activer le minijeu
     def minigame_activate(self,player):
@@ -527,12 +538,11 @@ while running == True:
 
     #appel de la fonction display affichant tout le contenu du jeu
     world.display()
-    #appel de la fonction "gravite_jeu" simulant la gravité
-    world.gravite_jeu(world.player)
     #appel de la fonction "get_rekt" actualisant le rect du joueur
     world.player.get_rekt()
     #appel de la fonction "collisions" détéctant les collisions
     world.collisions()
+
 
     #récupération des touches presséees
     keys = pygame.key.get_pressed()
@@ -541,8 +551,7 @@ while running == True:
     if keys[pygame.K_q] or keys[pygame.K_LEFT]:
         world.player.move('left')
     if keys[pygame.K_SPACE]:
-        if world.collision==True:
-            world.player.velocity=(700,20)
+        world.player.jump()
     if keys[pygame.K_p]:
         if world.player.allow_move == True:
             world.change_level()
@@ -562,11 +571,15 @@ while running == True:
     else:
         world.player.allow_move = True
 
+    world.gravite()
+
+    world.player.coords[1]+=world.player.movey
+    """
     if world.player.allow_move == True:
         world.player.player_position.y -= world.player.velocity[0] * dt
         world.player.velocity = (world.player.velocity[0],world.player.velocity[1]-1)
         if world.player.velocity[1]==0:
-            world.player.velocity=(0,0)
+            world.player.velocity=(0,0)"""
 
     if keys[pygame.K_j] or keys[pygame.K_e]:
         world.background.switch(world.player)
