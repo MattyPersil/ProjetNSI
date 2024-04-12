@@ -23,7 +23,7 @@ class Player:
         self.position_default = pygame.Vector2(44, 400)
         self.player_position = pygame.Vector2(44, 400)
         self.hp = 6
-        self.image_left = pygame.transform.scale_by(pygame.image.load("assets/raccoon still.png"), 1)
+        self.image_left = pygame.transform.scale_by(pygame.image.load("assets/raccoon still.png"), 1.5)
         self.image_right = pygame.transform.flip(self.image_left,flip_x=True,flip_y=False)
         self.current_image = self.image_right
         self.player_facing = 'right'
