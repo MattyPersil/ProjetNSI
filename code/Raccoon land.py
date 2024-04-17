@@ -15,7 +15,54 @@ dt = 0
 pygame.display.set_caption('Raccoon Land')
 
 
+#création de la classe "Collide_points" permettant de détecter les collisions
+class Collide_points:
+    def __init__(self,player_rect):
+        self.left = pygame.Rect((player_rect.x,player_rect.y + player_rect.h/2),(1,1))
+        self.right = pygame.Rect((player_rect.x+player_rect.w,player_rect.y + player_rect.h/2),(1,1))
+        self.top = pygame.Rect((player_rect.x + player_rect.w/2,player_rect.y),(1,1))
+        self.bottom_left = pygame.Rect((player_rect.x + player_rect.w/10*2,player_rect.y + player_rect.h),(1,1))
+        self.bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h,1,1)
+        self.almost_bottom_left = pygame.Rect(player_rect.x + player_rect.w/10,player_rect.y + player_rect.h/10*9,1,1)
+        self.almost_bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h/10*9,1,1)
+    
+    #fonction refresh permettant de refresh la posisition des points de collision
+    def refresh(self,player_rect):
+        self.left = pygame.Rect(player_rect.x,player_rect.y + player_rect.h/2,1,1)
+        self.right = pygame.Rect(player_rect.x+player_rect.w,player_rect.y + player_rect.h/2,1,1)
+        self.top = pygame.Rect(player_rect.x + player_rect.w/2,player_rect.y,1,1)
+        self.bottom_left = pygame.Rect((player_rect.x + player_rect.w/10,player_rect.y + player_rect.h),(1,1))
+        self.bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h,1,1)
+        self.almost_bottom_left = pygame.Rect(player_rect.x + player_rect.w/10,player_rect.y + player_rect.h/10*9,1,1)
+        self.almost_bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h/10*9,1,1)
+    
+    #fonction collision renvoyant les points de collision actifs
+    def collision(self,blocs):
+        d = {'left':False,"right":False,"top":False,'bottom_left':False,'bottom_right':False,"almost_bottom_left":False,'almost_bottom_right':False}
+        for bloc in blocs:
+            if bloc.colliderect(self.left):
+                d["left"]=True
 
+            if bloc.colliderect(self.right):
+                d["right"]=True
+
+            if bloc.colliderect(self.top):
+                d["top"]=True
+
+            if bloc.colliderect(self.bottom_left):
+                d["bottom_left"]=True
+
+            if bloc.colliderect(self.bottom_right):
+                d["bottom_right"]=True
+
+            if bloc.colliderect(self.almost_bottom_left):
+                d["almost_bottom_left"]=True 
+
+            if bloc.colliderect(self.almost_bottom_right):
+                d["almost_bottom_right"]=True    
+
+        return d
+    
 #création de la classe "Player" permettant de stocker les informations relatives au joueur
 class Player:
     #initialisation
@@ -35,6 +82,7 @@ class Player:
         self.rect = self.image_right.get_rect(topleft=self.coords)
         self.is_falling = True
         self.collision_cd = 0
+        self.collide_points = Collide_points(self.rect)
 
 
 
@@ -69,7 +117,7 @@ class Player:
     def jump(self):
         if self.is_falling == False:
             self.is_falling = True
-            self.movey = -17
+            self.movey = -15
             self.collision_cd = 5
 
 #création de la classe "Backgroud" permettant de stocker les informations relatives au fond du jeu
@@ -208,6 +256,7 @@ class Blocks:
                     self.specialrect = self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
+
 
 #création de la classe "Counters" permettant d'afficher les informations tel que la vie du joueur et le nombre de poubelles collectés
 class Counters:
@@ -356,7 +405,7 @@ class Minigame:
             y+=image_size[1]-1
         self.counters.render_counters()
         self.mini_player.render(image_size)
-        self.mini_player_2.render(image_size)
+        #self.mini_player_2.render(image_size)
 
     #fonction level_reset permettant de reset un level
     def level_reset(self,actual_level):
@@ -374,7 +423,7 @@ class Minigame:
         if keys[pygame.K_r]:
             self.level_reset(actual_level)
 
-        players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN],self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
+        players = {self.mini_player:[pygame.K_RIGHT,pygame.K_LEFT,pygame.K_UP,pygame.K_DOWN]}#,self.mini_player_2:[pygame.K_d,pygame.K_q,pygame.K_z,pygame.K_s]}
 
         for p,k in players.items():
             if keys[k[0]]:
@@ -383,8 +432,6 @@ class Minigame:
                     p.player_position['x'] += 1
                 if right_block == 4 and self.moving_wall_activation == False:
                     p.player_position['x'] += 1
-
-
             if keys[k[1]] :
                 left_block = level[p.player_position['y']][p.player_position['x']-1]
                 if left_block in [0,6,3,2,10,7]:
@@ -471,7 +518,7 @@ class World_data:
         left_collision = False
         right_collision = False
         #top_collision = False
-        
+        """
         for bloc in self.blocs.rects:
             if bloc.colliderect(self.player.rect):
                 self.collision = True
@@ -499,7 +546,31 @@ class World_data:
         if right_collision == False and left_collision == False:
             self.player.move_left = True
             self.player.move_right = True
+        """
+        self.player.collide_points.refresh(self.player.rect)
+        col = self.player.collide_points.collision(self.blocs.rects)
 
+        if col['bottom_left'] == True or col['bottom_right'] == True:
+            self.collision = True
+        
+        if col['right'] == True:
+            right_collision = True
+        if col['left'] == True:
+            left_collision = True
+        
+        if (col['bottom_left'] == True or col['bottom_right'] == True) and col['almost_bottom'] == True:
+            self.player.coords[1]-=8
+        
+        if left_collision == True and right_collision == False:
+            self.player.move_left = False
+            self.player.move_right = True
+        elif left_collision == False and right_collision == True:
+            self.player.move_left = True
+            self.player.move_right = False
+        elif left_collision == False and right_collision == False:
+            self.player.move_left = True
+            self.player.move_right = True
+        
 
         if world.background.dim == 0:
             if self.blocs.specialrect.colliderect(self.player.rect):
@@ -516,11 +587,15 @@ class World_data:
     def gravite(self):
         self.collisions()
         print(self.collision)
+        if self.collision == False:
+            self.player.is_falling = True
         if self.player.is_falling == True:
             self.player.movey += 1
         if self.collision == True:
             self.player.movey = 0
             self.player.is_falling = False
+
+
 
     #fonction minigame permettant d'activer le minijeu
     def minigame_activate(self,player):
