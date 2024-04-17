@@ -22,19 +22,19 @@ class Collide_points:
         self.right = pygame.Rect((player_rect.x+player_rect.w,player_rect.y + player_rect.h/2),(1,1))
         self.top = pygame.Rect((player_rect.x + player_rect.w/2,player_rect.y),(1,1))
         self.bottom_left = pygame.Rect((player_rect.x + player_rect.w/10*2,player_rect.y + player_rect.h),(1,1))
-        self.bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h,1,1)
+        self.bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*8,player_rect.y + player_rect.h,1,1)
         self.almost_bottom_left = pygame.Rect(player_rect.x + player_rect.w/10,player_rect.y + player_rect.h/10*9,1,1)
-        self.almost_bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h/10*9,1,1)
+        self.almost_bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*8,player_rect.y + player_rect.h/10*9,1,1)
     
     #fonction refresh permettant de refresh la posisition des points de collision
     def refresh(self,player_rect):
         self.left = pygame.Rect(player_rect.x,player_rect.y + player_rect.h/2,1,1)
         self.right = pygame.Rect(player_rect.x+player_rect.w,player_rect.y + player_rect.h/2,1,1)
         self.top = pygame.Rect(player_rect.x + player_rect.w/2,player_rect.y,1,1)
-        self.bottom_left = pygame.Rect((player_rect.x + player_rect.w/10,player_rect.y + player_rect.h),(1,1))
-        self.bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h,1,1)
-        self.almost_bottom_left = pygame.Rect(player_rect.x + player_rect.w/10,player_rect.y + player_rect.h/10*9,1,1)
-        self.almost_bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*9,player_rect.y + player_rect.h/10*9,1,1)
+        self.bottom_left = pygame.Rect((player_rect.x + player_rect.w/10*2,player_rect.y + player_rect.h),(1,1))
+        self.bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*8,player_rect.y + player_rect.h,1,1)
+        self.almost_bottom_left = pygame.Rect(player_rect.x + player_rect.w/10*2,player_rect.y + player_rect.h/10*9,1,1)
+        self.almost_bottom_right = pygame.Rect(player_rect.x + player_rect.w/10*8,player_rect.y + player_rect.h/10*9,1,1)
     
     #fonction collision renvoyant les points de collision actifs
     def collision(self,blocs):
@@ -558,7 +558,7 @@ class World_data:
         if col['left'] == True:
             left_collision = True
         
-        if (col['bottom_left'] == True or col['bottom_right'] == True) and col['almost_bottom'] == True:
+        if (col['bottom_left'] == True or col['bottom_right'] == True) and (col['almost_bottom_left'] == True or col['almost_bottom_right'] == True):
             self.player.coords[1]-=8
         
         if left_collision == True and right_collision == False:
@@ -573,6 +573,7 @@ class World_data:
         
 
         if world.background.dim == 0:
+            print('test')
             if self.blocs.specialrect.colliderect(self.player.rect):
                 self.change_level()
 
