@@ -176,7 +176,11 @@ class Blocks:
                        (level_8_world_1,level_8_world_2),
                        (level_9_world_1,level_9_world_2),
                        (level_10_world_1,level_10_world_2),
-                       (level_11_world_1,level_11_world_2)]
+                       (level_11_world_1,level_11_world_2),
+                       (level_12_world_1,level_12_world_2),
+                       (level_13_world_1,level_13_world_2),
+                       (level_14_world_1,level_14_world_2),
+                       (level_15_world_1,level_15_world_2)]
         self.current_level = 0
     #fonction "randomizer" permettant de changer aléatoirement les blocs de terre dans le deuxieme monde
     def randomizer(self):
