@@ -195,12 +195,10 @@ class Blocks:
 
     def randomizer_2(self):
         for i in range(len(self.levels)):
-            for ligne in range(len(self.levels[i][4])):
-                for bloc in range(len(self.levels[i][4][ligne])):
-                    if self.levels[i][4][ligne][bloc] == 1 and rnd(1,4)==4:
-                        self.levels[i][4][ligne][bloc] = 7
-                    if self.levels[i][4][ligne][bloc] == 2 and rnd(1,3) == 3:
-                        self.levels[i][4][ligne][bloc] = 8
+            for ligne in range(len(self.levels[i][0])):
+                for bloc in range(len(self.levels[i][0][ligne])):
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,4)==4:
+                        self.levels[i][0][ligne][bloc] = 11
    
    
     #fonction "display" permettant d'afficher les blocs
@@ -269,6 +267,9 @@ class Blocks:
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
                     self.specialrect = self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))
+
+                if n == 11:
+                    screen.blit(self.tortuto,(x,y))
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
@@ -623,6 +624,7 @@ class World_data:
 
 world = World_data()
 world.blocs.randomizer()
+world.blocs.randomizer_2()
 #lancement du jeu
 while running == True:
     # code permettant de fermer le jeu quand la fenetre est fermée
