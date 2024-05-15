@@ -628,7 +628,7 @@ class World_data:
 
         if world.background.dim == 0:
             for element in self.blocs.specialrect:
-                if element.colliderect(self.player.rect):
+                if element.colliderect(self.player.rect) and self.player.wc_cd==0:
                     self.change_level()
 
         for spike in self.blocs.spikerect:
