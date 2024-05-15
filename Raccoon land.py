@@ -82,7 +82,6 @@ class Player:
         self.rect = self.image_right.get_rect(topleft=self.coords)
         self.is_falling = True
         self.collision_cd = 0
-        self.wc_cd = 0
         self.collide_points = Collide_points(self.rect)
 
 
@@ -171,7 +170,7 @@ class Blocks:
         self.corbeau_l = pygame.transform.scale(pygame.image.load("assets/corbeau up left.png"),self.image_size)
         self.rects = []
         self.spikerect = []
-        self.specialrect = []
+        self.specialrect = None
         self.trashcanrect = None
         self.levels = [(level_test_1,level_test_2),
                        (level_2_world_1,level_2_world_2),
@@ -226,7 +225,7 @@ class Blocks:
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
         self.rects=[]
-        self.specialrect = []
+        self.specialrect = None
         self.spikerect = []
         w = self.levels[self.current_level][dim]
 
@@ -288,7 +287,7 @@ class Blocks:
                     self.spikerect.append(self.spike.get_rect(topleft=(x,y)))
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
-                    self.specialrect = [self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))]
+                    self.specialrect = self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))
 
                 if n == 11:
                     screen.blit(self.tortuto_r,(x,y))
@@ -555,7 +554,6 @@ class World_data:
 
     #fonction spike_collision
     def spike_collision(self):
-        self.player.wc_cd = 5
         if self.player.hp>1:
             self.player.hp -= 1
         self.player.teleport()
@@ -627,9 +625,8 @@ class World_data:
                 self.player.hp -=1
 
         if world.background.dim == 0:
-            for element in self.blocs.specialrect:
-                if element.colliderect(self.player.rect):
-                    self.change_level()
+            if self.blocs.specialrect.colliderect(self.player.rect):
+                self.change_level()
 
         for spike in self.blocs.spikerect:
             if spike.colliderect(self.player.rect):
@@ -638,11 +635,6 @@ class World_data:
         if world.player.collision_cd > 0:
             world.player.collision_cd -= 1
             self.collision = False
-        
-        if world.player.wc_cd >0:
-            world.player.wc_cd-=1
-        
-
     #fonction gravite permettant de simluler la gravite dans le jeu
     def gravite(self):
         self.collisions()
@@ -723,7 +715,6 @@ while running == True:
 
     if keys[pygame.K_j] or keys[pygame.K_e]:
         world.background.switch(world.player)
-        world.player.wc_cd = 5
         time.sleep(0.15)
 
     pygame.display.flip()
