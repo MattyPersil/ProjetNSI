@@ -203,13 +203,13 @@ class Blocks:
         for i in range(len(self.levels)):
             for ligne in range(len(self.levels[i][0])):
                 for bloc in range(len(self.levels[i][0][ligne])):
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,8)==8:
                         self.levels[i][0][ligne][bloc] = 11
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,8)==8:
                         self.levels[i][0][ligne][bloc] = 12
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,8)==8:
                         self.levels[i][0][ligne][bloc] = 13
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,8)==8:
                         self.levels[i][0][ligne][bloc] = 14
     def randomizer_3(self):
         for i in range(len(self.levels)):
