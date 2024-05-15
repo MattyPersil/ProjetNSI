@@ -153,7 +153,7 @@ class Blocks:
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
-        self.tortuto_r = pygame.transform.scale(pygame.image.load("assets/tortuto right.jpg"),self.image_size)
+        self.tortuto_r = pygame.transform.scale(pygame.image.load("assets/tortuto right.png"),self.image_size)
         self.tortuto_l = pygame.transform.scale(pygame.image.load("assets/tortuto left.png"),self.image_size)
         self.tortuto_hr = pygame.transform.scale(pygame.image.load("assets/tortuto right haut de forme.png"),self.image_size)
         self.tortuto_hl = pygame.transform.scale(pygame.image.load("assets/tortuto left hauts de formes.png"),self.image_size)
@@ -166,6 +166,8 @@ class Blocks:
         self.hellgrassblock = pygame.transform.scale(pygame.image.load("assets/hellgrass.png"),self.image_size)
         self.hellflower = pygame.transform.scale(pygame.image.load("assets/hellflowers.png"),self.image_size)
         self.hellgrassblock2 = pygame.transform.scale(pygame.image.load("assets/hellgrass 2.png"),self.image_size)
+        self.corbeau_r = pygame.transform.scale(pygame.image.load("assets/corbeau up right.png"),self.image_size)
+        self.corbeau_l = pygame.transform.scale(pygame.image.load("assets/corbeau up left.png"),self.image_size)
         self.rects = []
         self.spikerect = []
         self.specialrect = None
@@ -201,14 +203,23 @@ class Blocks:
         for i in range(len(self.levels)):
             for ligne in range(len(self.levels[i][0])):
                 for bloc in range(len(self.levels[i][0][ligne])):
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==4:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
                         self.levels[i][0][ligne][bloc] = 11
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==4:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
                         self.levels[i][0][ligne][bloc] = 12
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==4:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
                         self.levels[i][0][ligne][bloc] = 13
-                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==4:
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,12)==12:
                         self.levels[i][0][ligne][bloc] = 14
+    def randomizer_3(self):
+        for i in range(len(self.levels)):
+            for ligne in range(len(self.levels[i][1])):
+                for bloc in range(len(self.levels[i][1][ligne])):
+                    if self.levels[i][1][ligne][bloc] == 10 and rnd(1,8) == 8:
+                        self.levels[i][1][ligne][bloc] = 15
+                    if self.levels[i][1][ligne][bloc] == 10 and rnd(1,8) == 8:
+                        self.levels[i][1][ligne][bloc] = 16
+
    
    
     #fonction "display" permettant d'afficher les blocs
@@ -286,6 +297,10 @@ class Blocks:
                         screen.blit(self.tortuto_hl,(x,y))
                 if n ==14:
                        screen.blit(self.tortuto_hr,(x,y))
+                if n ==15:
+                       screen.blit(self.corbeau_r,(x,y))
+                if n ==16:
+                       screen.blit(self.corbeau_l,(x,y))
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
@@ -641,6 +656,7 @@ class World_data:
 world = World_data()
 world.blocs.randomizer()
 world.blocs.randomizer_2()
+world.blocs.randomizer_3()
 #lancement du jeu
 while running == True:
     # code permettant de fermer le jeu quand la fenetre est fermée
