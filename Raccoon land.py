@@ -153,7 +153,7 @@ class Blocks:
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
-        self.tortuto = pygame.transform.scale(pygame.image.load("tortuto right.jpg"),self.image_size)
+        self.tortuto = pygame.transform.scale(pygame.image.load("assets/tortuto right.jpg"),self.image_size)
 
         self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
         self.helldirt2 = pygame.transform.scale(pygame.image.load("assets/helldirt 2.png"),self.image_size)
@@ -664,6 +664,8 @@ while running == True:
     if keys[pygame.K_t]:
         world.player.teleport()
 
+    if world.player.coords[1]>=700:
+        world.player.teleport()
     else:
         world.player.allow_move = True
 
