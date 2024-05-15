@@ -153,6 +153,7 @@ class Blocks:
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
+        self.tortuto = pygame.transform.scale(pygame.image.load("assets/tortuto right.jpg"),self.image_size)
 
         self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
         self.helldirt2 = pygame.transform.scale(pygame.image.load("assets/helldirt 2.png"),self.image_size)
@@ -192,6 +193,14 @@ class Blocks:
                     if self.levels[i][1][ligne][bloc] == 2 and rnd(1,3) == 3:
                         self.levels[i][1][ligne][bloc] = 8
 
+    def randomizer_2(self):
+        for i in range(len(self.levels)):
+            for ligne in range(len(self.levels[i][0])):
+                for bloc in range(len(self.levels[i][0][ligne])):
+                    if self.levels[i][0][ligne][bloc] == 4 and rnd(1,4)==4:
+                        self.levels[i][0][ligne][bloc] = 11
+   
+   
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
         self.rects=[]
@@ -258,6 +267,9 @@ class Blocks:
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
                     self.specialrect = self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))
+
+                if n == 11:
+                    screen.blit(self.tortuto,(x,y))
                 x+=self.image_size[0]-1
             y+=self.image_size[1]-1
 
@@ -432,27 +444,27 @@ class Minigame:
         for p,k in players.items():
             if keys[k[0]]:
                 right_block = level[p.player_position['y']][p.player_position['x']+1]
-                if right_block in [0,6,3,2,10,7]:
+                if right_block in [0,6,3,2,10,7,8]:
                     p.player_position['x'] += 1
                 if right_block == 4 and self.moving_wall_activation == False:
                     p.player_position['x'] += 1
             if keys[k[1]] :
                 left_block = level[p.player_position['y']][p.player_position['x']-1]
-                if left_block in [0,6,3,2,10,7]:
+                if left_block in [0,6,3,2,10,7,8]:
                     p.player_position['x'] -= 1
                 if left_block == 4 and self.moving_wall_activation == False:
                     p.player_position['x'] -= 1
 
             if keys[k[2]]:
                 upper_block = level[p.player_position['y']-1][p.player_position['x']]
-                if upper_block in [0,6,3,2,10,7]:
+                if upper_block in [0,6,3,2,10,7,8]:
                     p.player_position['y'] -= 1
                 if upper_block == 4 and self.moving_wall_activation == False:
                     p.player_position['y'] -= 1
 
             if keys[k[3]]:
                 lower_block = level[p.player_position['y']+1][p.player_position['x']]
-                if lower_block in [0,6,3,2,10,7]:
+                if lower_block in [0,6,3,2,10,7,8]:
                     p.player_position['y'] += 1
                 if lower_block == 4 and self.moving_wall_activation == False:
                     p.player_position['y'] += 1
@@ -472,6 +484,8 @@ class Minigame:
             if actual_block == 2 or actual_block == 10:
                 self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =10
                 self.moving_wall_activation = True
+            if actual_block == 8:
+                self.level_reset(actual_level)
 
 
 
@@ -514,7 +528,6 @@ class World_data:
         self.player.teleport()
         if self.background.dim == 1:
             self.background.switch(self.player)
-        print(self.player.hp)
 
     #fonction "collisions" permettant de déctecter les collisions et agir en conséquence
     def collisions(self):
@@ -581,7 +594,6 @@ class World_data:
                 self.player.hp -=1
 
         if world.background.dim == 0:
-            print('test')
             if self.blocs.specialrect.colliderect(self.player.rect):
                 self.change_level()
 
@@ -595,7 +607,6 @@ class World_data:
     #fonction gravite permettant de simluler la gravite dans le jeu
     def gravite(self):
         self.collisions()
-        print(self.collision)
         if self.collision == False:
             self.player.is_falling = True
         if self.player.is_falling == True:
@@ -613,6 +624,7 @@ class World_data:
 
 world = World_data()
 world.blocs.randomizer()
+world.blocs.randomizer_2()
 #lancement du jeu
 while running == True:
     # code permettant de fermer le jeu quand la fenetre est fermée
@@ -654,6 +666,8 @@ while running == True:
     if keys[pygame.K_t]:
         world.player.teleport()
 
+    if world.player.coords[1]>=700:
+        world.player.teleport()
     else:
         world.player.allow_move = True
 
