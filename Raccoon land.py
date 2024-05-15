@@ -153,6 +153,7 @@ class Blocks:
         self.trashcan = pygame.transform.scale(pygame.image.load("assets/trashcan.png"),self.image_size)
         self.grassblock = pygame.transform.scale(pygame.image.load("assets/grassblock.png"),self.image_size)
         self.change_level_block = pygame.transform.scale(pygame.image.load("assets/Change Level.png"),self.image_size)
+        self.tortuto = pygame.transform.scale(pygame.image.load("tortuto right.jpg"),self.image_size)
 
         self.helldirt = pygame.transform.scale(pygame.image.load("assets/helldirt.png"),self.image_size)
         self.helldirt2 = pygame.transform.scale(pygame.image.load("assets/helldirt 2.png"),self.image_size)
@@ -192,6 +193,16 @@ class Blocks:
                     if self.levels[i][1][ligne][bloc] == 2 and rnd(1,3) == 3:
                         self.levels[i][1][ligne][bloc] = 8
 
+    def randomizer_2(self):
+        for i in range(len(self.levels)):
+            for ligne in range(len(self.levels[i][4])):
+                for bloc in range(len(self.levels[i][4][ligne])):
+                    if self.levels[i][4][ligne][bloc] == 1 and rnd(1,4)==4:
+                        self.levels[i][4][ligne][bloc] = 7
+                    if self.levels[i][4][ligne][bloc] == 2 and rnd(1,3) == 3:
+                        self.levels[i][4][ligne][bloc] = 8
+   
+   
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
         self.rects=[]
