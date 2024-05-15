@@ -432,27 +432,27 @@ class Minigame:
         for p,k in players.items():
             if keys[k[0]]:
                 right_block = level[p.player_position['y']][p.player_position['x']+1]
-                if right_block in [0,6,3,2,10,7]:
+                if right_block in [0,6,3,2,10,7,8]:
                     p.player_position['x'] += 1
                 if right_block == 4 and self.moving_wall_activation == False:
                     p.player_position['x'] += 1
             if keys[k[1]] :
                 left_block = level[p.player_position['y']][p.player_position['x']-1]
-                if left_block in [0,6,3,2,10,7]:
+                if left_block in [0,6,3,2,10,7,8]:
                     p.player_position['x'] -= 1
                 if left_block == 4 and self.moving_wall_activation == False:
                     p.player_position['x'] -= 1
 
             if keys[k[2]]:
                 upper_block = level[p.player_position['y']-1][p.player_position['x']]
-                if upper_block in [0,6,3,2,10,7]:
+                if upper_block in [0,6,3,2,10,7,8]:
                     p.player_position['y'] -= 1
                 if upper_block == 4 and self.moving_wall_activation == False:
                     p.player_position['y'] -= 1
 
             if keys[k[3]]:
                 lower_block = level[p.player_position['y']+1][p.player_position['x']]
-                if lower_block in [0,6,3,2,10,7]:
+                if lower_block in [0,6,3,2,10,7,8]:
                     p.player_position['y'] += 1
                 if lower_block == 4 and self.moving_wall_activation == False:
                     p.player_position['y'] += 1
@@ -472,6 +472,8 @@ class Minigame:
             if actual_block == 2 or actual_block == 10:
                 self.minigame_levels[actual_level][p.player_position['y']][p.player_position['x']] =10
                 self.moving_wall_activation = True
+            if actual_block == 8:
+                self.level_reset(actual_level)
 
 
 
@@ -514,7 +516,6 @@ class World_data:
         self.player.teleport()
         if self.background.dim == 1:
             self.background.switch(self.player)
-        print(self.player.hp)
 
     #fonction "collisions" permettant de déctecter les collisions et agir en conséquence
     def collisions(self):
@@ -581,7 +582,6 @@ class World_data:
                 self.player.hp -=1
 
         if world.background.dim == 0:
-            print('test')
             if self.blocs.specialrect.colliderect(self.player.rect):
                 self.change_level()
 
@@ -595,7 +595,6 @@ class World_data:
     #fonction gravite permettant de simluler la gravite dans le jeu
     def gravite(self):
         self.collisions()
-        print(self.collision)
         if self.collision == False:
             self.player.is_falling = True
         if self.player.is_falling == True:
