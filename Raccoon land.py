@@ -173,18 +173,14 @@ class Blocks:
         self.spikerect = []
         self.specialrect = None
         self.trashcanrect = None
-        self.levels = [(level_test_1,level_test_2),
-                       (level_2_world_1,level_2_world_2),
+        self.levels = [(level_2_world_1,level_2_world_2),
                        (level_3_world_1,level_3_world_2),
-                       (level_4_world_1,level_4_world_2),
                        (level_5_world_1,level_5_world_2),
                        (level_6_world_1,level_6_world_2),
                        (level_7_world_1,level_7_world_2),
-                       (level_8_world_1,level_8_world_2),
                        (level_9_world_1,level_9_world_2),
                        (level_10_world_1,level_10_world_2),
                        (level_11_world_1,level_11_world_2),
-                       (level_12_world_1,level_12_world_2),
                        (level_13_world_1,level_13_world_2),
                        (level_14_world_1,level_14_world_2),
                        (level_15_world_1,level_15_world_2),
@@ -412,7 +408,8 @@ class Minigame:
                                 level_8_mini,
                                 level_9_mini,
                                 level_10_mini,
-                                level_11_mini]
+                                level_11_mini,
+                                level_12_mini,]
         self.minigame_levels_copy = copy.deepcopy(self.minigame_levels)
         self.counters = Minigame_counters(self.minigame_trash_image,self.minigame_golden_trash_image)
 
@@ -567,36 +564,7 @@ class World_data:
         self.collision = False
         left_collision = False
         right_collision = False
-        #top_collision = False
-        """
-        for bloc in self.blocs.rects:
-            if bloc.colliderect(self.player.rect):
-                self.collision = True
 
-            bloc1 = bloc
-            bloc2 = bloc
-            bloc2.y+=5
-            bloc1.y+=5
-            bloc1.x-=5
-            bloc2.x+=5
-            if bloc1.colliderect(self.player.rect):
-                left_collision = True
-            if bloc2.colliderect(self.player.rect):
-                right_collision=True
-
-        if left_collision == True:
-            self.player.move_left = False
-            self.player.move_right = True
-        if right_collision == True:
-            self.player.move_right = False
-            self.player.move_left = True
-        if right_collision == True and left_collision == True:
-            self.player.move_left = False
-            self.player.move_right= False
-        if right_collision == False and left_collision == False:
-            self.player.move_left = True
-            self.player.move_right = True
-        """
         self.player.collide_points.refresh(self.player.rect)
         col = self.player.collide_points.collision(self.blocs.rects)
 
@@ -683,23 +651,33 @@ while running == True:
         world.player.move('left')
     if keys[pygame.K_SPACE]:
         world.player.jump()
-    if keys[pygame.K_p]:
-        if world.player.allow_move == True:
-            world.change_level()
-            time.sleep(1)
+    
     if keys[pygame.K_ESCAPE]:
         world.minigame.minigame_is_activated = False
     if keys[pygame.K_f]:
         if world.blocs.trashcanrect.colliderect(world.player.rect):
             world.minigame.minigame_is_activated = True
-    if keys[pygame.K_m]:
-        world.minigame.minigame_is_activated = True
+    
     if world.minigame.minigame_is_activated == True:
         world.minigame_activate(world.player)
         world.minigame.move(keys,world.blocs.current_level)
-    
+
+
+    """
+    Commandes Administrateurs :
+
+    if keys[pygame.K_m]:
+        world.minigame.minigame_is_activated = True
+
     if keys[pygame.K_t]:
         world.player.teleport()
+    
+    if keys[pygame.K_p]:
+        if world.player.allow_move == True:
+            world.change_level()
+            time.sleep(1)
+    """
+    
 
     if world.player.coords[1]>=700:
         world.player.teleport()
@@ -709,13 +687,7 @@ while running == True:
     world.gravite()
 
     world.player.coords[1]+=world.player.movey
-    """
-    if world.player.allow_move == True:
-        world.player.player_position.y -= world.player.velocity[0] * dt
-        world.player.velocity = (world.player.velocity[0],world.player.velocity[1]-1)
-        if world.player.velocity[1]==0:
-            world.player.velocity=(0,0)"""
-
+    
     if keys[pygame.K_j] or keys[pygame.K_e]:
         world.background.switch(world.player)
         time.sleep(0.15)
@@ -724,11 +696,9 @@ while running == True:
         world.player.wc_cd -=1
     pygame.display.flip()
     dt = clock.tick(60) / 1000
+    
 """
 # à ajouter
 
 
 """
-class entity:
-    #lieu de définition de toute les entités extérieur du joueur.
-    pass
