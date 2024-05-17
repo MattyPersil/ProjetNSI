@@ -83,6 +83,7 @@ class Player:
         self.is_falling = True
         self.collision_cd = 0
         self.collide_points = Collide_points(self.rect)
+        self.wc_cd =0
 
 
 
@@ -225,7 +226,7 @@ class Blocks:
     #fonction "display" permettant d'afficher les blocs
     def display(self,dim,player):
         self.rects=[]
-        self.specialrect = None
+        self.specialrect = []
         self.spikerect = []
         w = self.levels[self.current_level][dim]
 
@@ -287,7 +288,7 @@ class Blocks:
                     self.spikerect.append(self.spike.get_rect(topleft=(x,y)))
                 if n == 9:
                     screen.blit(self.change_level_block,(x,y))
-                    self.specialrect = self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))
+                    self.specialrect = [self.change_level_block.get_rect(bottomleft=(x,y+self.image_size[1]))]
 
                 if n == 11:
                     screen.blit(self.tortuto_r,(x,y))
@@ -554,6 +555,7 @@ class World_data:
 
     #fonction spike_collision
     def spike_collision(self):
+        self.player.wc_cd = 5
         if self.player.hp>1:
             self.player.hp -= 1
         self.player.teleport()
@@ -625,8 +627,9 @@ class World_data:
                 self.player.hp -=1
 
         if world.background.dim == 0:
-            if self.blocs.specialrect.colliderect(self.player.rect) and self.player.wc_cd==0:
-                self.change_level()
+            for element in self.blocs.specialrect:
+                if element.colliderect(self.player.rect) and self.player.wc_cd==0:
+                    self.change_level()
 
         for spike in self.blocs.spikerect:
             if spike.colliderect(self.player.rect):
@@ -717,6 +720,8 @@ while running == True:
         world.background.switch(world.player)
         time.sleep(0.15)
 
+    if world.player.wc_cd>0:
+        world.player.wc_cd -=1
     pygame.display.flip()
     dt = clock.tick(60) / 1000
 """
