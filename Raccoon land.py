@@ -6,7 +6,7 @@ from liste_des_minijeux import *
 import copy
 from random import randint as rnd
 #initialisation de pygame
-pygame.init
+pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((1000,600))
 clock = pygame.time.Clock()
